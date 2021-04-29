@@ -1,4 +1,4 @@
-from typing import Any, Callable, Dict, Iterable, List, Optional, Set, Tuple, Union
+from typing import Any, Callable, Dict, Generator, List, Set, Tuple
 import itertools
 
 from helper import helpers
@@ -7,6 +7,7 @@ from helper import helpers
 class SequenceGenerator:
     """
     Generates a sequence.
+    Extra sentence to test hooks.
     """
 
     # Class Methods
@@ -17,25 +18,24 @@ class SequenceGenerator:
         Creates a ```self.config`` dictionary that holds information on implemented methods.
         """
         self.length: int = wanted_length
-        self.config: Dict[
-            str, Dict[str, Union[List[str], Callable[[Optional[int]], Iterable[int]]]]
-        ] = {
+        self.config: Dict[str, Dict[str, Any]] = {
             "fib": {"parameters": ["first", "second"], "method": self.fib_wrapper},
             "pascal": {"parameters": ["base_number"], "method": self.pascal_wrapper},
         }
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"SequenceGenerator(length={self.length}, implemented_generators={self.get_generators()})"
 
     # Generator methods
-    def fib(self, first: int, second: int) -> Iterable[int]:
+    def fib(self, first: int, second: int) -> Generator:
         """
-        Yield the first ``self.length`` numbers of the Fibonnaci sequence where the first term is ``first`` and the second term is `second`.
+        Yield the first ``self.length`` numbers of the Fibonnaci sequence
+        where the first term is ``first`` and the second term is `second`.
 
         :param int first: The first element of the sequence.
         :param int second: The second element of the sequence.
         :return A generator that generates the sequence.
-        :rtype Iterable[int]
+        :rtype Generator
         """
         # Handle errorenous length
         if self.length < 0:
@@ -64,21 +64,25 @@ class SequenceGenerator:
             first = second
             second = current
 
-    def fib_wrapper(self, params: Dict[str, int]) -> Iterable[int]:
+    def fib_wrapper(self, params: Dict[str, int]) -> Generator:
         """
-        Wrapper method for ``self.fib``. Written so we can have a unified interface to generate traces, given a sequence key.
+        Wrapper method for ``self.fib``.
+        Written so we can have a unified interface to generate traces, given a sequence key.
 
         Unsafe, when used in any other place than the generation config dict.
         """
         return self.fib(params["first"], params["second"])
 
-    def pascal(self, base_number: int) -> Iterable[int]:
+    def pascal(self, base_number: int) -> Generator:
         """
-        Yield the first ``self.length`` numbers of the sequence defined by reading the pascal triangle from left to right, top to bottom, where the first integer is ``base_number`` (usually this is 1).
+        Yield the first ``self.length`` numbers of the sequence defined by
+        reading the pascal triangle from left to right, top to bottom,
+        where the first integer is ``base_number`` (usually this is 1).
 
-        :param int base_number: The first integer on top of the triangle, and consequently the first integer in the sequence.
+        :param int base_number: The first integer on top of the triangle,
+                                and consequently the first integer in the sequence.
         :return A generator that generates the sequence.
-        :rtype Iterable[int]
+        :rtype Generator
         """
         # Handle errorenous length
         if self.length < 0:
@@ -91,7 +95,7 @@ class SequenceGenerator:
             yield base_number
             return
 
-        def next_row(row):
+        def next_row(row: List[int]) -> Generator:
             tmp = 0
             for val in row:
                 yield tmp + val
@@ -122,9 +126,10 @@ class SequenceGenerator:
 
             row = next
 
-    def pascal_wrapper(self, params: Dict[str, int]) -> Iterable[int]:
+    def pascal_wrapper(self, params: Dict[str, int]) -> Generator:
         """
-        Wrapper method for ``self.pascal``. Written so we can have a unified interface to generate traces, given a sequence key.
+        Wrapper method for ``self.pascal``.
+        Written so we can have a unified interface to generate traces, given a sequence key.
 
         Unsafe, when used in any other place than the generation config dict.
         """
@@ -135,9 +140,10 @@ class SequenceGenerator:
         """
         Getter for config parameters.
         """
-        return self.config[seq_name]["parameters"]
+        params = [str(item) for item in self.config[seq_name]["parameters"]]
+        return params
 
-    def __get_method(self, seq_name: str) -> Callable[[Optional[int]], Iterable[int]]:
+    def __get_method(self, seq_name: str) -> Callable[[Dict[str, int]], Generator]:
         """
         Getter for config method.
         """
@@ -151,16 +157,18 @@ class SequenceGenerator:
         return [generator for generator in self.config.keys()]
 
     # Private methods
-    def __check_params(self, given: List[str], required: List[str]) -> None:
+    def __check_params(self, given: Dict[str, Any], required: List[str]) -> None:
         """
-        Checks whether or not supplied parameters to ``self.generate_trace`` or ``self.generate_log`` coincide with required parameters.
+        Checks correctness of supplied parameters to ``self.generate_trace`` or ``self.generate_log``.
         Raises a ``ValueError`` when something that was required wasn't there.
         """
         for param in required:
             if param not in given:
                 raise ValueError(f"Required parameter '{param}' was not present.")
 
-    def __build_params(self, given: List[Any], required: List[Any]) -> Dict[str, Any]:
+    def __build_params(
+        self, given: Dict[str, Any], required: List[Any]
+    ) -> Dict[str, Any]:
         """
         Builds a keyword-argument dictionary given the parameters in ``self.generate_trace`` or ``self.generate_log``.
 
@@ -177,20 +185,24 @@ class SequenceGenerator:
         }
 
     def __build_param_matrix(
-        self, givens: List[List[Any]], requireds: List[List[Any]]
+        self, givens: Dict[str, Any], requireds: List[str]
     ) -> List[Dict[str, int]]:
         """
-        Builds parameter list for usage in ``self.generate_log``. Essentially this method transforms a dictionary ``array_dict``:
+        Builds parameter list for usage in ``self.generate_log``.
 
+        Essentially this method transforms a dictionary ``array_dict`` of following shape:
+
+        ```
         {
             "required_param1" : [1, 2, ..],
             "required_param2" : [1, 2, 3, 4, ..],
             "required_param3" : [1, ..],
             ..
         }
+        ```
 
-        to our wanted list:
-
+        to our wanted list of shape:
+        ```
         [
             {
                 "required_param1" : 1,
@@ -204,6 +216,7 @@ class SequenceGenerator:
                 "required_param3" : 3
             }
         ]
+        ```
         """
         # Keep result variable
         result = []
@@ -223,7 +236,7 @@ class SequenceGenerator:
         return result
 
     # Public methods
-    def generate_trace(self, seq_name: str, **params) -> Iterable[int]:
+    def generate_trace(self, seq_name: str, **kwargs: Any) -> Generator:
         """
         Generates a single trace corresponding to some sequence.
         """
@@ -231,30 +244,30 @@ class SequenceGenerator:
 
         # It exists, check for param mismatch
         required_params = self.__get_params(seq_name)
-        self.__check_params(params, required_params)
+        self.__check_params(kwargs, required_params)
 
         # required (and possibly more) params present -- retrieve reference to generator
         method = self.__get_method(seq_name)
 
         # build params to pass through
-        method_params = self.__build_params(params, required_params)
+        method_params = self.__build_params(kwargs, required_params)
 
         # call the function, and return its result
         return method(method_params)
 
-    def generate_log(self, seq_name: str, **params) -> Set[Tuple[int]]:
+    def generate_log(self, seq_name: str, **kwargs: Any) -> Set[Tuple[int, ...]]:
         """
         Generates a single trace corresponding to some sequence.
         """
         helpers.check_item_list(seq_name.strip().lower(), self.get_generators())
 
         required_params = [param + "s" for param in self.__get_params(seq_name)]
-        self.__check_params(params, required_params)
+        self.__check_params(kwargs, required_params)
 
         # Create the log variable as a set
         log = set()
 
-        for params in self.__build_param_matrix(params, required_params):
+        for params in self.__build_param_matrix(kwargs, required_params):
             trace = tuple(self.generate_trace(seq_name, **params))
             log.add(trace)
 
