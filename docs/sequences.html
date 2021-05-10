@@ -1,0 +1,501 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.2" />
+<title>integer_sequences.sequences API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>integer_sequences.sequences</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">FIB = [
+    1,
+    1,
+    2,
+    3,
+    5,
+    8,
+    13,
+    21,
+    34,
+    55,
+    89,
+    144,
+    233,
+    377,
+    610,
+    987,
+    1597,
+    2584,
+    4181,
+    6765,
+    10946,
+    17711,
+    28657,
+    46368,
+    75025,
+    121393,
+    196418,
+    317811,
+    514229,
+    832040,
+    1346269,
+    2178309,
+    3524578,
+    5702887,
+    9227465,
+    14930352,
+    24157817,
+    39088169,
+    63245986,
+    102334155,
+    165580141,
+    267914296,
+    433494437,
+    701408733,
+    1134903170,
+    1836311903,
+    2971215073,
+    4807526976,
+    7778742049,
+    12586269025,
+    20365011074,
+    32951280099,
+    53316291173,
+    86267571272,
+    139583862445,
+    225851433717,
+    365435296162,
+    591286729879,
+    956722026041,
+    1548008755920,
+    2504730781961,
+    4052739537881,
+    6557470319842,
+    10610209857723,
+    17167680177565,
+    27777890035288,
+    44945570212853,
+    72723460248141,
+    117669030460994,
+    190392490709135,
+    308061521170129,
+    498454011879264,
+    806515533049393,
+    1304969544928657,
+    2111485077978050,
+    3416454622906707,
+    5527939700884757,
+    8944394323791464,
+    14472334024676221,
+    23416728348467685,
+    37889062373143906,
+    61305790721611591,
+    99194853094755497,
+    160500643816367088,
+    259695496911122585,
+    420196140727489673,
+    679891637638612258,
+    1100087778366101931,
+    1779979416004714189,
+    2880067194370816120,
+    4660046610375530309,
+    7540113804746346429,
+    12200160415121876738,
+    19740274219868223167,
+    31940434634990099905,
+    51680708854858323072,
+    83621143489848422977,
+    135301852344706746049,
+    218922995834555169026,
+    354224848179261915075,
+]
+&#34;&#34;&#34;First 100 digits in the fibonacci sequence.&#34;&#34;&#34;
+
+PASCAL = [
+    1,
+    1,
+    1,
+    1,
+    2,
+    1,
+    1,
+    3,
+    3,
+    1,
+    1,
+    4,
+    6,
+    4,
+    1,
+    1,
+    5,
+    10,
+    10,
+    5,
+    1,
+    1,
+    6,
+    15,
+    20,
+    15,
+    6,
+    1,
+    1,
+    7,
+    21,
+    35,
+    35,
+    21,
+    7,
+    1,
+    1,
+    8,
+    28,
+    56,
+    70,
+    56,
+    28,
+    8,
+    1,
+    1,
+    9,
+    36,
+    84,
+    126,
+    126,
+    84,
+    36,
+    9,
+    1,
+    1,
+    10,
+    45,
+    120,
+    210,
+    252,
+    210,
+    120,
+    45,
+    10,
+    1,
+    1,
+    11,
+    55,
+    165,
+    330,
+    462,
+    462,
+    330,
+    165,
+    55,
+    11,
+    1,
+    1,
+    12,
+    66,
+    220,
+    495,
+    792,
+    924,
+    792,
+    495,
+    220,
+    66,
+    12,
+    1,
+    1,
+    13,
+    78,
+    286,
+    715,
+    1287,
+    1716,
+    1716,
+    1287,
+]
+&#34;&#34;&#34;First 100 digits in the sequence given by the triangle of pascal.&#34;&#34;&#34;
+
+CATALAN = [
+    1,
+    1,
+    2,
+    5,
+    14,
+    42,
+    132,
+    429,
+    1430,
+    4862,
+    16796,
+    58786,
+    208012,
+    742900,
+    2674440,
+    9694845,
+    35357670,
+    129644790,
+    477638700,
+    1767263190,
+    6564120420,
+    24466267020,
+    91482563640,
+    343059613650,
+    1289904147324,
+    4861946401452,
+    18367353072152,
+    69533550916004,
+    263747951750360,
+    1002242216651368,
+    3814986502092304,
+    14544636039226909,
+    55534064877048198,
+    212336130412243110,
+    812944042149730764,
+    3116285494907301262,
+    11959798385860453492,
+    45950804324621742364,
+    176733862787006701400,
+    680425371729975800390,
+    2622127042276492108820,
+    10113918591637898134020,
+    39044429911904443959240,
+    150853479205085351660700,
+    583300119592996693088040,
+    2257117854077248073253720,
+    8740328711533173390046320,
+    33868773757191046886429490,
+    131327898242169365477991900,
+    509552245179617138054608572,
+    1978261657756160653623774456,
+    7684785670514316385230816156,
+    29869166945772625950142417512,
+    116157871455782434250553845880,
+    451959718027953471447609509424,
+    1759414616608818870992479875972,
+    6852456927844873497549658464312,
+    26700952856774851904245220912664,
+    104088460289122304033498318812080,
+    405944995127576985730643443367112,
+    1583850964596120042686772779038896,
+    6182127958584855650487080847216336,
+    24139737743045626825711458546273312,
+    94295850558771979787935384946380125,
+    368479169875816659479009042713546950,
+    1440418573150919668872489894243865350,
+    5632681584560312734993915705849145100,
+    22033725021956517463358552614056949950,
+    86218923998960285726185640663701108500,
+    337485502510215975556783793455058624700,
+    1321422108420282270489942177190229544600,
+    5175569924646105559418940193995065716350,
+    20276890389709399862928998568254641025700,
+    79463489365077377841208237632349268884500,
+    311496878311103321137536291518809134027240,
+    1221395654430378811828760722007962130791020,
+    4790408930363303911328386208394864461024520,
+    18793142726809884575211361279087545193250040,
+    73745243611532458459690151854647329239335600,
+    289450081175264899454283846029490767264392230,
+    1136359577947336271931632877004667456667613940,
+    4462290049988320482463241297506133183499654740,
+    17526585015616776834735140517915655636396234280,
+    68854441132780194707888052034668647142985206100,
+    270557451039395118028642463289168566420671280440,
+    1063353702922273835973036658043476458723103404520,
+    4180080073556524734514695828170907458428751314320,
+    16435314834665426797069144960762886143367590394940,
+    64633260585762914370496637486146181462681535261000,
+    254224158304000796523953440778841647086547372026600,
+    1000134600800354781929399250536541864362461089950800,
+    3935312233584004685417853572763349509774031680023800,
+    15487357822491889407128326963778343232013931127835600,
+    60960876535340415751462563580829648891969728907438000,
+    239993345518077005168915776623476723006280827488229600,
+    944973797977428207852605870454939596837230758234904050,
+    3721443204405954385563870541379246659709506697378694300,
+    14657929356129575437016877846657032761712954950899755100,
+    57743358069601357782187700608042856334020731624756611000,
+    227508830794229349661819540395688853956041682601541047340,
+    896519947090131496687170070074100632420837521538745909320,
+]
+&#34;&#34;&#34;First 100 catalan numbers.&#34;&#34;&#34;
+
+RECAMAN = [
+    0,
+    1,
+    3,
+    6,
+    2,
+    7,
+    13,
+    20,
+    12,
+    21,
+    11,
+    22,
+    10,
+    23,
+    9,
+    24,
+    8,
+    25,
+    43,
+    62,
+    42,
+    63,
+    41,
+    18,
+    42,
+    17,
+    43,
+    16,
+    44,
+    15,
+    45,
+    14,
+    46,
+    79,
+    113,
+    78,
+    114,
+    77,
+    39,
+    78,
+    38,
+    79,
+    37,
+    80,
+    36,
+    81,
+    35,
+    82,
+    34,
+    83,
+    33,
+    84,
+    32,
+    85,
+    31,
+    86,
+    30,
+    87,
+    29,
+    88,
+    28,
+    89,
+    27,
+    90,
+    26,
+    91,
+    157,
+    224,
+    156,
+    225,
+    155,
+    226,
+    154,
+    227,
+    153,
+    228,
+    152,
+    75,
+    153,
+    74,
+    154,
+    73,
+    155,
+    72,
+    156,
+    71,
+    157,
+    70,
+    158,
+    69,
+    159,
+    68,
+    160,
+    67,
+    161,
+    66,
+    162,
+    65,
+    163,
+    64,
+]
+&#34;&#34;&#34;First 100 digits in the recaman sequence.&#34;&#34;&#34;</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-variables">Global variables</h2>
+<dl>
+<dt id="integer_sequences.sequences.CATALAN"><code class="name">var <span class="ident">CATALAN</span></code></dt>
+<dd>
+<div class="desc"><p>First 100 catalan numbers.</p></div>
+</dd>
+<dt id="integer_sequences.sequences.FIB"><code class="name">var <span class="ident">FIB</span></code></dt>
+<dd>
+<div class="desc"><p>First 100 digits in the fibonacci sequence.</p></div>
+</dd>
+<dt id="integer_sequences.sequences.PASCAL"><code class="name">var <span class="ident">PASCAL</span></code></dt>
+<dd>
+<div class="desc"><p>First 100 digits in the sequence given by the triangle of pascal.</p></div>
+</dd>
+<dt id="integer_sequences.sequences.RECAMAN"><code class="name">var <span class="ident">RECAMAN</span></code></dt>
+<dd>
+<div class="desc"><p>First 100 digits in the recaman sequence.</p></div>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="integer_sequences" href="index.html">integer_sequences</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-variables">Global variables</a></h3>
+<ul class="">
+<li><code><a title="integer_sequences.sequences.CATALAN" href="#integer_sequences.sequences.CATALAN">CATALAN</a></code></li>
+<li><code><a title="integer_sequences.sequences.FIB" href="#integer_sequences.sequences.FIB">FIB</a></code></li>
+<li><code><a title="integer_sequences.sequences.PASCAL" href="#integer_sequences.sequences.PASCAL">PASCAL</a></code></li>
+<li><code><a title="integer_sequences.sequences.RECAMAN" href="#integer_sequences.sequences.RECAMAN">RECAMAN</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+</footer>
+</body>
+</html>

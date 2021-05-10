@@ -19,28 +19,592 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Namespace <code>integer_sequences.generator</code></h1>
+<h1 class="title">Module <code>integer_sequences.generator</code></h1>
 </header>
 <section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">from generator.XESTransformator import XESTransformator
+from generator.SequenceGenerator import SequenceGenerator
+
+__all__ = [&#34;SequenceGenerator&#34;, &#34;XESTransformator&#34;]</code></pre>
+</details>
 </section>
 <section>
-<h2 class="section-title" id="header-submodules">Sub-modules</h2>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt><code class="name"><a title="integer_sequences.generator.SequenceGenerator" href="SequenceGenerator.html">integer_sequences.generator.SequenceGenerator</a></code></dt>
+<dt id="integer_sequences.generator.SequenceGenerator"><code class="flex name class">
+<span>class <span class="ident">SequenceGenerator</span></span>
+<span>(</span><span>wanted_length: int = 10)</span>
+</code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Sequence generator class.
+Generates a log (set) of traces (sequences) that originate from the same distribution / method.</p>
+<h2 id="attributes">Attributes</h2>
+<p>length &ndash; The amount of items to generate.
+Initializes a sequence generator that generates sequences of length <code>self.length</code>.</p>
+<p>Creates a <code>`self.config</code> dictionary that holds information on implemented methods.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class SequenceGenerator:
+    &#34;&#34;&#34;
+    Sequence generator class.
+    Generates a log (set) of traces (sequences) that originate from the same distribution / method.
+
+    Attributes:
+      length -- The amount of items to generate.
+    &#34;&#34;&#34;
+
+    # Class Methods
+    def __init__(self, wanted_length: int = 10):
+        &#34;&#34;&#34;
+        Initializes a sequence generator that generates sequences of length ``self.length``.
+
+        Creates a ```self.config`` dictionary that holds information on implemented methods.
+        &#34;&#34;&#34;
+        # Test for invalid lengths
+        if wanted_length &lt;= 0:
+            raise InvalidLengthException(wanted_length)
+
+        # At this point we know that length is at least 1.
+        self.length: int = wanted_length
+        &#34;&#34;&#34;Length states how many numbers we want to generate.&#34;&#34;&#34;
+        self.config: Dict[str, Dict[str, Any]] = {
+            &#34;fib&#34;: {&#34;parameters&#34;: [&#34;first&#34;, &#34;second&#34;], &#34;method&#34;: self.__fib_wrapper},
+            &#34;pascal&#34;: {&#34;parameters&#34;: [&#34;first&#34;], &#34;method&#34;: self.__pascal_wrapper},
+            &#34;recaman&#34;: {&#34;parameters&#34;: [&#34;first&#34;], &#34;method&#34;: self.__recaman_wrapper},
+            &#34;catalan&#34;: {&#34;parameters&#34;: [&#34;first&#34;], &#34;method&#34;: self.__catalan_wrapper},
+        }
+        &#34;&#34;&#34;A config object that holds, per implemented metod,
+        a list of required parameters and a reference to the method.&#34;&#34;&#34;
+
+    def __repr__(self) -&gt; str:
+        return f&#34;SequenceGenerator(length={self.length}, implemented_generators={self.get_generators()})&#34;
+
+    # Generator methods
+    def __fib(self, first: int = 1, second: int = 1) -&gt; Generator:
+        &#34;&#34;&#34;
+        Yield the first ``self.length`` numbers of the Fibonnaci sequence
+        where the first term is ``first`` and the second term is `second`.
+
+        :param int first: The first element of the sequence.
+        :param int second: The second element of the sequence.
+        :return A generator that generates the sequence.
+        :rtype Generator
+        &#34;&#34;&#34;
+        yield first
+        # If you only want 1 number, for some reason?
+        if self.length == 1:
+            return
+
+        yield second
+
+        count = 0
+        while count &lt; self.length - 2:
+            # Increment count
+            count += 1
+            # Compute next value
+            current = first + second
+            yield current
+            # Update values
+            first = second
+            second = current
+
+    def __fib_wrapper(self, params: Dict[str, int]) -&gt; Generator:
+        &#34;&#34;&#34;
+        Wrapper method for ``self.fib``.
+        Written so we can have a unified interface to generate traces, given a sequence key.
+
+        Unsafe when used in any other place than the generation config dict `SequenceGenerator.config`.
+        &#34;&#34;&#34;
+        return self.__fib(first=params[&#34;first&#34;], second=params[&#34;second&#34;])
+
+    def __pascal(self, first: int = 1) -&gt; Generator:
+        &#34;&#34;&#34;
+        Yield the first ``self.length`` numbers of the sequence defined by
+        reading the pascal triangle from left to right, top to bottom,
+        where the first integer is ``first`` (usually this is 1).
+
+        :param int first: The first integer on top of the triangle,
+                          and consequently the first integer in the sequence.
+        :return A generator that generates the sequence.
+        :rtype Generator
+        &#34;&#34;&#34;
+        yield first
+
+        # If for some reason you only want the first number?
+        if self.length == 1:
+            return
+
+        def next_row(row: List[int]) -&gt; Generator:
+            &#34;&#34;&#34;
+            Computes the next row in the triangle of pascal.
+            &#34;&#34;&#34;
+            tmp = 0
+            for val in row:
+                yield tmp + val
+                tmp = val
+            yield first
+
+        row = [first]
+        # Keep track of counts, start at 1
+        counts = 1
+
+        while True:
+            # compute the next row
+            next = list(next_row(row))
+
+            # loop through them
+            for item in next:
+                # test for length
+                if counts &lt; self.length:
+                    yield item
+                    counts += 1
+                else:
+                    return
+
+            row = next
+
+    def __pascal_wrapper(self, params: Dict[str, int]) -&gt; Generator:
+        &#34;&#34;&#34;
+        Wrapper method for ``self.pascal``.
+        Written so we can have a unified interface to generate traces, given a sequence key.
+
+        Unsafe when used in any other place than the generation config dict `SequenceGenerator.config`.
+        &#34;&#34;&#34;
+        return self.__pascal(first=params[&#34;first&#34;])
+
+    def __recaman(self, first: int = 0) -&gt; Generator:
+        &#34;&#34;&#34;
+        TODO: Explanation of this sequence.
+        https://oeis.org/A005132
+        We use first as parameter. Original sequence defines this as 0.
+        &#34;&#34;&#34;
+        # If for some reason you only want the first number?
+        if self.length == 1:
+            yield first
+            return
+
+        # Keep track of a count and already seen digits
+        count = 0
+        current = first
+        already_seen = set([])
+
+        def get_next(current: int, index: int) -&gt; int:
+            &#34;&#34;&#34;
+            Given the current number and its index, yields the next number.
+            &#34;&#34;&#34;
+            # Compute a(n) = a(n-1) - n
+            # if nonnegative and not in sequence, return
+            new_number = current - index
+
+            if (new_number &lt; 0) | (new_number in already_seen):
+                # Negative or already seen: add index in stead
+                new_number = current + index
+
+            return new_number
+
+        while count &lt; self.length:
+            # Compute next term in the sequence
+            new = get_next(current, count)
+
+            # Save it to the set of already seen terms
+            already_seen.add(new)
+
+            # Set current to new value and increase count
+            count += 1
+            current = new
+
+            # Finally, yield the correct value
+            yield current
+
+    def __recaman_wrapper(self, params: Dict[str, int]) -&gt; Generator:
+        &#34;&#34;&#34;
+        Wrapper method for ``self.recaman``.
+        Written so we can have a unified interface to generate traces, given a sequence key.
+
+        Unsafe when used in any other place than the generation config dict `SequenceGenerator.config`.
+        &#34;&#34;&#34;
+        return self.__recaman(first=params[&#34;first&#34;])
+
+    def __catalan(self, first: int = 1) -&gt; Generator:
+        &#34;&#34;&#34;
+        https://oeis.org/A000108
+
+        Implemented using dynamic programming. Direct formula has issues with n &gt; 30
+        (in particular, 14544636039226909 became 14544636039226908 and all subsequent values were off).
+        I suspect these issues are due to the native inaccuracy of storing numbers on a computer.
+        &#34;&#34;&#34;
+        # Initialise dynamic programming table
+        dp = [0] * (self.length + 1)
+        dp[0] = first  # in our case this is a parameter. By default it should be 1.
+        dp[1] = first  # in our case this is a parameter. By default it should be 1.
+
+        # Fill the dp entries based on the recursive formula
+        for i in range(2, self.length + 1):
+            for j in range(i):
+                dp[i] += dp[j] * dp[i - j - 1]
+
+        # Loop through table, and yield the next item as long as the index does not exceed the length!
+        for index in range(len(dp)):
+            if index &lt; self.length:
+                yield dp[index]
+
+    def __catalan_wrapper(self, params: Dict[str, int]) -&gt; Generator:
+        &#34;&#34;&#34;
+        Wrapper method for ``self.recaman``.
+        Written so we can have a unified interface to generate traces, given a sequence key.
+
+        Unsafe when used in any other place than the generation config dict `SequenceGenerator.config`.
+        &#34;&#34;&#34;
+        return self.__catalan(first=params[&#34;first&#34;])
+
+    # Private getters
+    def __get_params(self, seq_name: str) -&gt; List[str]:
+        &#34;&#34;&#34;
+        Getter for config parameters.
+
+        :param str seq_name: The name of the sequence generation method for which to retrieve parameters.
+        :return parameters for the related method
+        :rtype List[str]
+        &#34;&#34;&#34;
+        params = [str(item) for item in self.config[seq_name][&#34;parameters&#34;]]
+        return params
+
+    def __get_method(self, seq_name: str) -&gt; Callable[[Dict[str, int]], Generator]:
+        &#34;&#34;&#34;
+        Getter for config method.
+
+        :param str seq_name: The name of the sequence generation method for which to retrieve parameters.
+        :return method reference
+        :rtype Callable[[Dict[str, int]], Generator]
+        &#34;&#34;&#34;
+        return self.config[seq_name][&#34;method&#34;]
+
+    # Private methods
+    def __check_params(self, given: Dict[str, Any], required: List[str]) -&gt; None:
+        &#34;&#34;&#34;
+        Checks correctness of supplied parameters to ``self.generate_trace`` or ``self.generate_log``.
+        Raises a ``MissingRequiredParameter`` when something that was required wasn&#39;t there.
+
+        :param Dict[str, Any] given: Given dictionary.
+        :param List[str] required: Required items.
+        :raises MissingRequiredParameter: when a required parameter was not given.
+        &#34;&#34;&#34;
+        missing = [param for param in required if param not in given]
+        if missing:
+            raise MissingRequiredParameter(missing)
+
+    def __build_params(
+        self, given: Dict[str, Any], required: List[Any]
+    ) -&gt; Dict[str, Any]:
+        &#34;&#34;&#34;
+        Builds a keyword-argument dictionary given the parameters in ``self.generate_trace`` or ``self.generate_log``.
+
+        Returns a dictionary of the form:
+        {
+            &#34;param1&#34; : value,
+            &#34;param2&#34; : value,
+            ...
+        }
+
+        :param Dict[str, Any] given: Given dictionary.
+        :param List[str] required: Required items.
+        :return a dictionary of parameters and values.
+        :rtype Dict[str, Any]
+        &#34;&#34;&#34;
+        return {
+            required_parameter: given[required_parameter]
+            for required_parameter in required
+        }
+
+    def __build_param_matrix(
+        self, givens: Dict[str, Any], requireds: List[str]
+    ) -&gt; List[Dict[str, int]]:
+        &#34;&#34;&#34;
+        Builds parameter list for usage in ``self.generate_log``.
+
+        Transforms a dictionary of shape:
+        ```
+        {
+            &#34;required_param1&#34; : [1, 2, ..],
+            &#34;required_param2&#34; : [1, 2, 3, 4, ..],
+            &#34;required_param3&#34; : [1, ..],
+            ..
+        }
+        ```
+        to our wanted list of shape:
+        ```
+        [
+            {
+                &#34;required_param1&#34; : 1,
+                &#34;required_param2&#34; : 1,
+                &#34;required_param3&#34; : 1
+            },
+            ...
+            {
+                &#34;required_param1&#34; : 3,
+                &#34;required_param2&#34; : 3,
+                &#34;required_param3&#34; : 3
+            }
+        ]
+        ```
+        :param Dict[str, Any] givens: Given dictionaries.
+        :param List[str] requireds: Required items.
+        :return List of a particular format/shape.
+        :rtype List[Dict[str, int]]
+        &#34;&#34;&#34;
+        # Keep result variable
+        result = []
+
+        # Create dictionary out of lists
+        array_dict = self.__build_params(givens, requireds)
+
+        # Compute the cartesian product using itertools
+        compute_product_of_me = list(array_dict.values())
+        for tuple_of_vals in itertools.product(*compute_product_of_me):
+            # tuple_of_vals: (a, b, c, ...)
+            # len(item) == len(keys)
+            # item[0] corresponds with keys[0]
+            keys = [key[:-1] for key in array_dict.keys()]
+            result.append({key: value for (key, value) in zip(keys, tuple_of_vals)})
+
+        return result
+
+    def __check_length_with_params(self, seq_name: str) -&gt; None:
+        &#34;&#34;&#34;
+        A check necessary when creating an entire log.
+
+        :param str seq_name: The name of the sequence generation method for which to generate a single trace.
+        :raises InvalidLengthException: when a sequence cannot be generated
+                                        due to mismatch of required params and wanted length.
+        &#34;&#34;&#34;
+        min_len_for_method = len(self.__get_params(seq_name))
+        if min_len_for_method &gt; self.length:
+            raise InvalidLengthException(
+                length=min_len_for_method,
+                message=f&#34;Cannot generate sequence of length {self.length}\
+                    if a method needs a minimum of %s parameters&#34;,
+            )
+
+    # Public getters
+    def get_generators(self) -&gt; List[str]:
+        &#34;&#34;&#34;
+        Getter for implemented generator functions.
+
+        :return List of the names of implemented generator functions.
+        :rtype List[str]
+        &#34;&#34;&#34;
+        return [generator for generator in self.config.keys()]
+
+    # Public methods
+    def generate_trace(self, seq_name: str, **kwargs: Any) -&gt; Generator:
+        &#34;&#34;&#34;
+        Generates a single trace corresponding to some sequence.
+
+        :param str seq_name: The name of the sequence generation method for which to generate a single trace.
+        :return generator for the particular sequence
+        :raises NotYetImplemented: when the seq_name key does not correspond to a generator method
+        :raises MissingRequiredParameter: when a particular parameter was not provided
+        :rtype Generator
+        &#34;&#34;&#34;
+        try:
+            check_item_list(seq_name.strip().lower(), self.get_generators())
+        except MissingItem:
+            raise NotYetImplemented(seq_name)
+
+        # It exists, check for param mismatch
+        required_params = self.__get_params(seq_name)
+        self.__check_params(kwargs, required_params)
+
+        # required (and possibly more) params present -- retrieve reference to generator
+        method = self.__get_method(seq_name)
+
+        # build params to pass through
+        method_params = self.__build_params(kwargs, required_params)
+
+        # call the function, and return its result
+        return method(method_params)
+
+    def generate_log(self, seq_name: str, **kwargs: Any) -&gt; Set[Tuple[int, ...]]:
+        &#34;&#34;&#34;
+        Generates an entire log corresponding to some sequence.
+
+        :param str seq_name: The name of the sequence generation method for which to generate a log.
+        :return A log of traces.
+        :raises NotYetImplemented: when the seq_name key does not correspond to a generator method
+        :raises MissingRequiredParameter: when a particular parameter was not provided
+        :rtype Set[Tuple[int, ...]]
+        &#34;&#34;&#34;
+        try:
+            check_item_list(seq_name.strip().lower(), self.get_generators())
+        except MissingItem:
+            raise NotYetImplemented(seq_name)
+
+        required_params = [param + &#34;s&#34; for param in self.__get_params(seq_name)]
+        self.__check_params(kwargs, required_params)
+        self.__check_length_with_params(seq_name)
+
+        # Create the log variable as a set
+        log = set()
+
+        for params in self.__build_param_matrix(kwargs, required_params):
+            trace = tuple(self.generate_trace(seq_name, **params))
+            log.add(trace)
+
+        return log</code></pre>
+</details>
+<h3>Instance variables</h3>
+<dl>
+<dt id="integer_sequences.generator.SequenceGenerator.config"><code class="name">var <span class="ident">config</span></code></dt>
+<dd>
+<div class="desc"><p>A config object that holds, per implemented metod,
+a list of required parameters and a reference to the method.</p></div>
 </dd>
-<dt><code class="name"><a title="integer_sequences.generator.XESTransformator" href="XESTransformator.html">integer_sequences.generator.XESTransformator</a></code></dt>
+<dt id="integer_sequences.generator.SequenceGenerator.length"><code class="name">var <span class="ident">length</span></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Length states how many numbers we want to generate.</p></div>
 </dd>
 </dl>
-</section>
-<section>
-</section>
-<section>
-</section>
-<section>
+<h3>Methods</h3>
+<dl>
+<dt id="integer_sequences.generator.SequenceGenerator.generate_log"><code class="name flex">
+<span>def <span class="ident">generate_log</span></span>(<span>self, seq_name: str, **kwargs: Any) ‑> Set[Tuple[int, ...]]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Generates an entire log corresponding to some sequence.</p>
+<p>:param str seq_name: The name of the sequence generation method for which to generate a log.
+:return A log of traces.
+:raises NotYetImplemented: when the seq_name key does not correspond to a generator method
+:raises MissingRequiredParameter: when a particular parameter was not provided
+:rtype Set[Tuple[int, &hellip;]]</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def generate_log(self, seq_name: str, **kwargs: Any) -&gt; Set[Tuple[int, ...]]:
+    &#34;&#34;&#34;
+    Generates an entire log corresponding to some sequence.
+
+    :param str seq_name: The name of the sequence generation method for which to generate a log.
+    :return A log of traces.
+    :raises NotYetImplemented: when the seq_name key does not correspond to a generator method
+    :raises MissingRequiredParameter: when a particular parameter was not provided
+    :rtype Set[Tuple[int, ...]]
+    &#34;&#34;&#34;
+    try:
+        check_item_list(seq_name.strip().lower(), self.get_generators())
+    except MissingItem:
+        raise NotYetImplemented(seq_name)
+
+    required_params = [param + &#34;s&#34; for param in self.__get_params(seq_name)]
+    self.__check_params(kwargs, required_params)
+    self.__check_length_with_params(seq_name)
+
+    # Create the log variable as a set
+    log = set()
+
+    for params in self.__build_param_matrix(kwargs, required_params):
+        trace = tuple(self.generate_trace(seq_name, **params))
+        log.add(trace)
+
+    return log</code></pre>
+</details>
+</dd>
+<dt id="integer_sequences.generator.SequenceGenerator.generate_trace"><code class="name flex">
+<span>def <span class="ident">generate_trace</span></span>(<span>self, seq_name: str, **kwargs: Any) ‑> Generator</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Generates a single trace corresponding to some sequence.</p>
+<p>:param str seq_name: The name of the sequence generation method for which to generate a single trace.
+:return generator for the particular sequence
+:raises NotYetImplemented: when the seq_name key does not correspond to a generator method
+:raises MissingRequiredParameter: when a particular parameter was not provided
+:rtype Generator</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def generate_trace(self, seq_name: str, **kwargs: Any) -&gt; Generator:
+    &#34;&#34;&#34;
+    Generates a single trace corresponding to some sequence.
+
+    :param str seq_name: The name of the sequence generation method for which to generate a single trace.
+    :return generator for the particular sequence
+    :raises NotYetImplemented: when the seq_name key does not correspond to a generator method
+    :raises MissingRequiredParameter: when a particular parameter was not provided
+    :rtype Generator
+    &#34;&#34;&#34;
+    try:
+        check_item_list(seq_name.strip().lower(), self.get_generators())
+    except MissingItem:
+        raise NotYetImplemented(seq_name)
+
+    # It exists, check for param mismatch
+    required_params = self.__get_params(seq_name)
+    self.__check_params(kwargs, required_params)
+
+    # required (and possibly more) params present -- retrieve reference to generator
+    method = self.__get_method(seq_name)
+
+    # build params to pass through
+    method_params = self.__build_params(kwargs, required_params)
+
+    # call the function, and return its result
+    return method(method_params)</code></pre>
+</details>
+</dd>
+<dt id="integer_sequences.generator.SequenceGenerator.get_generators"><code class="name flex">
+<span>def <span class="ident">get_generators</span></span>(<span>self) ‑> List[str]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Getter for implemented generator functions.</p>
+<p>:return List of the names of implemented generator functions.
+:rtype List[str]</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_generators(self) -&gt; List[str]:
+    &#34;&#34;&#34;
+    Getter for implemented generator functions.
+
+    :return List of the names of implemented generator functions.
+    :rtype List[str]
+    &#34;&#34;&#34;
+    return [generator for generator in self.config.keys()]</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="integer_sequences.generator.XESTransformator"><code class="flex name class">
+<span>class <span class="ident">XESTransformator</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Transforms an event-log in XES format to a set of integer sequences.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class XESTransformator:
+    &#34;&#34;&#34;
+    Transforms an event-log in XES format to a set of integer sequences.
+    &#34;&#34;&#34;
+
+    pass</code></pre>
+</details>
+</dd>
+</dl>
 </section>
 </article>
 <nav id="sidebar">
@@ -54,10 +618,21 @@
 <li><code><a title="integer_sequences" href="../index.html">integer_sequences</a></code></li>
 </ul>
 </li>
-<li><h3><a href="#header-submodules">Sub-modules</a></h3>
+<li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
-<li><code><a title="integer_sequences.generator.SequenceGenerator" href="SequenceGenerator.html">integer_sequences.generator.SequenceGenerator</a></code></li>
-<li><code><a title="integer_sequences.generator.XESTransformator" href="XESTransformator.html">integer_sequences.generator.XESTransformator</a></code></li>
+<li>
+<h4><code><a title="integer_sequences.generator.SequenceGenerator" href="#integer_sequences.generator.SequenceGenerator">SequenceGenerator</a></code></h4>
+<ul class="">
+<li><code><a title="integer_sequences.generator.SequenceGenerator.config" href="#integer_sequences.generator.SequenceGenerator.config">config</a></code></li>
+<li><code><a title="integer_sequences.generator.SequenceGenerator.generate_log" href="#integer_sequences.generator.SequenceGenerator.generate_log">generate_log</a></code></li>
+<li><code><a title="integer_sequences.generator.SequenceGenerator.generate_trace" href="#integer_sequences.generator.SequenceGenerator.generate_trace">generate_trace</a></code></li>
+<li><code><a title="integer_sequences.generator.SequenceGenerator.get_generators" href="#integer_sequences.generator.SequenceGenerator.get_generators">get_generators</a></code></li>
+<li><code><a title="integer_sequences.generator.SequenceGenerator.length" href="#integer_sequences.generator.SequenceGenerator.length">length</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="integer_sequences.generator.XESTransformator" href="#integer_sequences.generator.XESTransformator">XESTransformator</a></code></h4>
+</li>
 </ul>
 </li>
 </ul>

@@ -22,6 +22,7 @@ repos:
             --disallow-incomplete-defs,
             --no-implicit-optional
         ]
+        exclude: ^test/
 -   repo: https://github.com/psf/black
     rev: 20.8b1
     hooks:
@@ -39,6 +40,7 @@ repos:
             --max-line-length=120,
             --doctests
         ]
+        exclude: ^test/
 -  repo: local
    hooks:
    -    id: export-conda-environment

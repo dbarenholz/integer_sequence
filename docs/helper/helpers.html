@@ -26,29 +26,47 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from typing import Any, Dict, List
+<pre><code class="python"># Typing
+from typing import Any, Dict, List
 
-def check_item_list(item: Any, lst: List[Any]):
+# Own
+from exception import MissingItem
+
+
+def check_item_list(item: Any, lst: List[Any]) -&gt; None:
     &#34;&#34;&#34;
-    Raises a ``ValueError`` if a particular ``item`` is NOT contained in a particular ``lst``.
+    Raises a ``MissingItem`` if a particular ``item`` is NOT contained in a particular ``lst``.
 
     :param Any item: The item to check for.
     :param List[Any] lst: The list to check in.
-    :raises ValueError: if ``item`` not in ``lst``
+    :raises MissingItem: if ``item`` not in ``lst``
     &#34;&#34;&#34;
     if item not in lst:
-        raise ValueError(f&#34;There is no &#39;{item}&#39; in &#39;{lst}&#39;.&#34;)
+        raise MissingItem(item, lst)
 
-def check_key_dict(key: Any, dictionary: Dict[Any, Any]):
+
+def check_key_dict(key: Any, dictionary: Dict[Any, Any]) -&gt; None:
     &#34;&#34;&#34;
-    Raises a ``ValueError`` if a particular ``key`` is NOT contained in a particular ``dictionary``.
-    
+    Raises a ``MissingItem`` if a particular ``key`` is NOT contained in a particular ``dictionary``.
+
     :param Any key: The key to check for.
     :param Dict[Any, Any] dictionary: The dictionary to check in.
-    :raises ValueError: if ``key`` not in ``dictionary.keys()``
+    :raises MissingItem: if ``key`` not in ``dictionary.keys()``
     &#34;&#34;&#34;
     if key not in dictionary.keys():
-        raise ValueError(f&#34;There is no &#39;{key}&#39; in &#39;{dictionary}&#39;.&#34;)</code></pre>
+        raise MissingItem(key, dictionary)
+
+
+def assert_equal(expected: Any, result: Any) -&gt; None:
+    &#34;&#34;&#34;
+    Asserts that expected is equal to result.
+    To be called from tests.
+
+    :param Any expected: The expected outcome of some function call.
+    :param Any result: The resulted outcome of some function call.
+    :raises AssertionError: when equality fails
+    &#34;&#34;&#34;
+    assert expected == result</code></pre>
 </details>
 </section>
 <section>
@@ -58,52 +76,77 @@ def check_key_dict(key: Any, dictionary: Dict[Any, Any]):
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="integer_sequences.helper.helpers.check_item_list"><code class="name flex">
-<span>def <span class="ident">check_item_list</span></span>(<span>item: Any, lst: List[Any])</span>
+<dt id="integer_sequences.helper.helpers.assert_equal"><code class="name flex">
+<span>def <span class="ident">assert_equal</span></span>(<span>expected: Any, result: Any) ‑> NoneType</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Raises a <code>ValueError</code> if a particular <code>item</code> is NOT contained in a particular <code>lst</code>.</p>
-<p>:param Any item: The item to check for.
-:param List[Any] lst: The list to check in.
-:raises ValueError: if <code>item</code> not in <code>lst</code></p></div>
+<div class="desc"><p>Asserts that expected is equal to result.
+To be called from tests.</p>
+<p>:param Any expected: The expected outcome of some function call.
+:param Any result: The resulted outcome of some function call.
+:raises AssertionError: when equality fails</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def check_item_list(item: Any, lst: List[Any]):
+<pre><code class="python">def assert_equal(expected: Any, result: Any) -&gt; None:
     &#34;&#34;&#34;
-    Raises a ``ValueError`` if a particular ``item`` is NOT contained in a particular ``lst``.
+    Asserts that expected is equal to result.
+    To be called from tests.
+
+    :param Any expected: The expected outcome of some function call.
+    :param Any result: The resulted outcome of some function call.
+    :raises AssertionError: when equality fails
+    &#34;&#34;&#34;
+    assert expected == result</code></pre>
+</details>
+</dd>
+<dt id="integer_sequences.helper.helpers.check_item_list"><code class="name flex">
+<span>def <span class="ident">check_item_list</span></span>(<span>item: Any, lst: List[Any]) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Raises a <code>MissingItem</code> if a particular <code>item</code> is NOT contained in a particular <code>lst</code>.</p>
+<p>:param Any item: The item to check for.
+:param List[Any] lst: The list to check in.
+:raises MissingItem: if <code>item</code> not in <code>lst</code></p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def check_item_list(item: Any, lst: List[Any]) -&gt; None:
+    &#34;&#34;&#34;
+    Raises a ``MissingItem`` if a particular ``item`` is NOT contained in a particular ``lst``.
 
     :param Any item: The item to check for.
     :param List[Any] lst: The list to check in.
-    :raises ValueError: if ``item`` not in ``lst``
+    :raises MissingItem: if ``item`` not in ``lst``
     &#34;&#34;&#34;
     if item not in lst:
-        raise ValueError(f&#34;There is no &#39;{item}&#39; in &#39;{lst}&#39;.&#34;)</code></pre>
+        raise MissingItem(item, lst)</code></pre>
 </details>
 </dd>
 <dt id="integer_sequences.helper.helpers.check_key_dict"><code class="name flex">
-<span>def <span class="ident">check_key_dict</span></span>(<span>key: Any, dictionary: Dict[Any, Any])</span>
+<span>def <span class="ident">check_key_dict</span></span>(<span>key: Any, dictionary: Dict[Any, Any]) ‑> NoneType</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Raises a <code>ValueError</code> if a particular <code>key</code> is NOT contained in a particular <code>dictionary</code>.</p>
+<div class="desc"><p>Raises a <code>MissingItem</code> if a particular <code>key</code> is NOT contained in a particular <code>dictionary</code>.</p>
 <p>:param Any key: The key to check for.
 :param Dict[Any, Any] dictionary: The dictionary to check in.
-:raises ValueError: if <code>key</code> not in <code>dictionary.keys()</code></p></div>
+:raises MissingItem: if <code>key</code> not in <code>dictionary.keys()</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def check_key_dict(key: Any, dictionary: Dict[Any, Any]):
+<pre><code class="python">def check_key_dict(key: Any, dictionary: Dict[Any, Any]) -&gt; None:
     &#34;&#34;&#34;
-    Raises a ``ValueError`` if a particular ``key`` is NOT contained in a particular ``dictionary``.
-    
+    Raises a ``MissingItem`` if a particular ``key`` is NOT contained in a particular ``dictionary``.
+
     :param Any key: The key to check for.
     :param Dict[Any, Any] dictionary: The dictionary to check in.
-    :raises ValueError: if ``key`` not in ``dictionary.keys()``
+    :raises MissingItem: if ``key`` not in ``dictionary.keys()``
     &#34;&#34;&#34;
     if key not in dictionary.keys():
-        raise ValueError(f&#34;There is no &#39;{key}&#39; in &#39;{dictionary}&#39;.&#34;)</code></pre>
+        raise MissingItem(key, dictionary)</code></pre>
 </details>
 </dd>
 </dl>
@@ -124,6 +167,7 @@ def check_key_dict(key: Any, dictionary: Dict[Any, Any]):
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
+<li><code><a title="integer_sequences.helper.helpers.assert_equal" href="#integer_sequences.helper.helpers.assert_equal">assert_equal</a></code></li>
 <li><code><a title="integer_sequences.helper.helpers.check_item_list" href="#integer_sequences.helper.helpers.check_item_list">check_item_list</a></code></li>
 <li><code><a title="integer_sequences.helper.helpers.check_key_dict" href="#integer_sequences.helper.helpers.check_key_dict">check_key_dict</a></code></li>
 </ul>
