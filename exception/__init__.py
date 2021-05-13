@@ -3,6 +3,8 @@ from exception.exceptions import (
     MissingRequiredParameter,
     MissingItem,
     NotYetImplemented,
+    UnsupportedOrInvalidLogFormat,
+    InvalidElementPassed,
 )
 
 __all__ = [
@@ -10,4 +12,6 @@ __all__ = [
     "MissingRequiredParameter",
     "MissingItem",
     "NotYetImplemented",
+    "UnsupportedOrInvalidLogFormat",
+    "InvalidElementPassed",
 ]

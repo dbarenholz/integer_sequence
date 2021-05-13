@@ -156,4 +156,5 @@ dependencies:
   - zstd=1.4.9=haebb681_0
   - pip:
     - astunparse==1.6.3
+    - opyenxes==0.3.0
 prefix: /home/dan/miniconda3/envs/internship

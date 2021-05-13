@@ -2,7 +2,7 @@
 from typing import Any, Dict, List, Union
 
 
-class InvalidLengthException(Exception):
+class InvalidLengthException(ValueError):
     """
     Raised when a sequence generator was given an invalid length on initialisation,
     or when a length is smaller than the required number of parameters for a generator method.
@@ -24,7 +24,7 @@ class InvalidLengthException(Exception):
         return f"{self.length} -> {self.message}"
 
 
-class NotYetImplemented(Exception):
+class NotYetImplemented(NotImplementedError):
     """
     Raised when a sequence generator was given a key for a sequence function that is not implemented.
 
@@ -88,3 +88,46 @@ class MissingItem(Exception):
 
     def __repr__(self) -> str:
         return f"{self.item}, {self.container} -> {self.message}"
+
+
+class UnsupportedOrInvalidLogFormat(Exception):
+    """
+    Raised when an unsupported or invalid log format is given to the XES transformator.
+
+    Attributes:
+      filepath -- the path to the file provided
+    """
+
+    def __init__(
+        self, filepath: str, message: str = "Cannot parse file located at %s."
+    ) -> None:
+        self.filepath = filepath
+        self.message = message % filepath
+        super().__init__(self.message)
+
+    def __repr__(self) -> str:
+        return f"{self.filepath} -> {self.message}"
+
+
+class InvalidElementPassed(Exception):
+    """
+    Raised when an invalid element is passed to some method.
+
+    Attributes:
+      element -- the provided element tag
+      expected -- the expected element tag
+    """
+
+    def __init__(
+        self,
+        element: str,
+        expected: str,
+        message: str = "Expected tag '%s' but got '%s'.",
+    ) -> None:
+        self.element = element
+        self.expected = expected
+        self.message = message % (expected, element)
+        super().__init__(self.message)
+
+    def __repr__(self) -> str:
+        return f"({self.element}, {self.expected}) -> {self.message}"

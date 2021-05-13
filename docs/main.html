@@ -29,18 +29,32 @@
 <pre><code class="python"># ! /home/dan/miniconda3/bin/conda &#34;run -n internship python&#34;
 # -*- coding: utf-8 -*-
 from typing import Any
+from os import getcwd, listdir
+from os.path import join, isfile
 
 # Own
-from generator import SequenceGenerator
+from generator import XESTransformator
 
 if __name__ == &#34;__main__&#34;:
-    # Create a generator object
-    generator = SequenceGenerator(wanted_length=100)
-
     # === anything below this line is testing code === #
+    transformer = XESTransformator()
+
+    test_log = &#34;./data/small_log.xes&#34;
+
+    path_to_datasets = join(getcwd(), &#34;data&#34;)
+    DATASETS = [
+        join(path_to_datasets, file)
+        for file in listdir(path_to_datasets)
+        if isfile(join(path_to_datasets, file))
+    ]
+
+    transformed = transformer.transform(test_log)
+
     def show(log: Any) -&gt; None:
         for i, l in enumerate(log):
             print(f&#34;Trace {i}: {l}&#34;)
+
+    show(transformed)
 
 
 else:

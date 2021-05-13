@@ -31,6 +31,8 @@
     MissingRequiredParameter,
     MissingItem,
     NotYetImplemented,
+    UnsupportedOrInvalidLogFormat,
+    InvalidElementPassed,
 )
 
 __all__ = [
@@ -38,6 +40,8 @@ __all__ = [
     &#34;MissingRequiredParameter&#34;,
     &#34;MissingItem&#34;,
     &#34;NotYetImplemented&#34;,
+    &#34;UnsupportedOrInvalidLogFormat&#34;,
+    &#34;InvalidElementPassed&#34;,
 ]</code></pre>
 </details>
 </section>
@@ -57,6 +61,48 @@ __all__ = [
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
+<dt id="integer_sequences.exception.InvalidElementPassed"><code class="flex name class">
+<span>class <span class="ident">InvalidElementPassed</span></span>
+<span>(</span><span>element: str, expected: str, message: str = "Expected tag '%s' but got '%s'.")</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Raised when an invalid element is passed to some method.</p>
+<h2 id="attributes">Attributes</h2>
+<p>element &ndash; the provided element tag
+expected &ndash; the expected element tag</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class InvalidElementPassed(Exception):
+    &#34;&#34;&#34;
+    Raised when an invalid element is passed to some method.
+
+    Attributes:
+      element -- the provided element tag
+      expected -- the expected element tag
+    &#34;&#34;&#34;
+
+    def __init__(
+        self,
+        element: str,
+        expected: str,
+        message: str = &#34;Expected tag &#39;%s&#39; but got &#39;%s&#39;.&#34;,
+    ) -&gt; None:
+        self.element = element
+        self.expected = expected
+        self.message = message % (expected, element)
+        super().__init__(self.message)
+
+    def __repr__(self) -&gt; str:
+        return f&#34;({self.element}, {self.expected}) -&gt; {self.message}&#34;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>builtins.Exception</li>
+<li>builtins.BaseException</li>
+</ul>
+</dd>
 <dt id="integer_sequences.exception.InvalidLengthException"><code class="flex name class">
 <span>class <span class="ident">InvalidLengthException</span></span>
 <span>(</span><span>length: int = 0, message: str = "Attempted to create a sequence generator with invalid length: '%s'")</span>
@@ -70,7 +116,7 @@ or when a length is smaller than the required number of parameters for a generat
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class InvalidLengthException(Exception):
+<pre><code class="python">class InvalidLengthException(ValueError):
     &#34;&#34;&#34;
     Raised when a sequence generator was given an invalid length on initialisation,
     or when a length is smaller than the required number of parameters for a generator method.
@@ -93,6 +139,7 @@ or when a length is smaller than the required number of parameters for a generat
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
+<li>builtins.ValueError</li>
 <li>builtins.Exception</li>
 <li>builtins.BaseException</li>
 </ul>
@@ -189,7 +236,7 @@ container &ndash; list or dictionary that was supposed to contain item</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class NotYetImplemented(Exception):
+<pre><code class="python">class NotYetImplemented(NotImplementedError):
     &#34;&#34;&#34;
     Raised when a sequence generator was given a key for a sequence function that is not implemented.
 
@@ -208,6 +255,44 @@ container &ndash; list or dictionary that was supposed to contain item</p></div>
 
     def __repr__(self) -&gt; str:
         return f&#34;{self.key} -&gt; {self.message}&#34;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>builtins.NotImplementedError</li>
+<li>builtins.RuntimeError</li>
+<li>builtins.Exception</li>
+<li>builtins.BaseException</li>
+</ul>
+</dd>
+<dt id="integer_sequences.exception.UnsupportedOrInvalidLogFormat"><code class="flex name class">
+<span>class <span class="ident">UnsupportedOrInvalidLogFormat</span></span>
+<span>(</span><span>filepath: str, message: str = 'Cannot parse file located at %s.')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Raised when an unsupported or invalid log format is given to the XES transformator.</p>
+<h2 id="attributes">Attributes</h2>
+<p>filepath &ndash; the path to the file provided</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class UnsupportedOrInvalidLogFormat(Exception):
+    &#34;&#34;&#34;
+    Raised when an unsupported or invalid log format is given to the XES transformator.
+
+    Attributes:
+      filepath -- the path to the file provided
+    &#34;&#34;&#34;
+
+    def __init__(
+        self, filepath: str, message: str = &#34;Cannot parse file located at %s.&#34;
+    ) -&gt; None:
+        self.filepath = filepath
+        self.message = message % filepath
+        super().__init__(self.message)
+
+    def __repr__(self) -&gt; str:
+        return f&#34;{self.filepath} -&gt; {self.message}&#34;</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -237,6 +322,9 @@ container &ndash; list or dictionary that was supposed to contain item</p></div>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
+<h4><code><a title="integer_sequences.exception.InvalidElementPassed" href="#integer_sequences.exception.InvalidElementPassed">InvalidElementPassed</a></code></h4>
+</li>
+<li>
 <h4><code><a title="integer_sequences.exception.InvalidLengthException" href="#integer_sequences.exception.InvalidLengthException">InvalidLengthException</a></code></h4>
 </li>
 <li>
@@ -247,6 +335,9 @@ container &ndash; list or dictionary that was supposed to contain item</p></div>
 </li>
 <li>
 <h4><code><a title="integer_sequences.exception.NotYetImplemented" href="#integer_sequences.exception.NotYetImplemented">NotYetImplemented</a></code></h4>
+</li>
+<li>
+<h4><code><a title="integer_sequences.exception.UnsupportedOrInvalidLogFormat" href="#integer_sequences.exception.UnsupportedOrInvalidLogFormat">UnsupportedOrInvalidLogFormat</a></code></h4>
 </li>
 </ul>
 </li>
