@@ -26,9 +26,29 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from helper.helpers import assert_equal, check_item_list, check_key_dict
+<pre><code class="python">from helper.helpers import (
+    assert_equal,
+    check_item_list,
+    check_key_dict,
+    loads,
+    dumps,
+    ROOTPATH,
+    DATAPATH,
+    LOGPATH,
+    TESTPATH,
+)
 
-__all__ = [&#34;check_item_list&#34;, &#34;check_key_dict&#34;, &#34;assert_equal&#34;]</code></pre>
+__all__ = [
+    &#34;check_item_list&#34;,
+    &#34;check_key_dict&#34;,
+    &#34;assert_equal&#34;,
+    &#34;loads&#34;,
+    &#34;dumps&#34;,
+    &#34;ROOTPATH&#34;,
+    &#34;DATAPATH&#34;,
+    &#34;LOGPATH&#34;,
+    &#34;TESTPATH&#34;,
+]</code></pre>
 </details>
 </section>
 <section>
@@ -118,6 +138,49 @@ To be called from tests.</p>
         raise MissingItem(key, dictionary)</code></pre>
 </details>
 </dd>
+<dt id="integer_sequences.helper.dumps"><code class="name flex">
+<span>def <span class="ident">dumps</span></span>(<span>filename: str, data: Any) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Dumps data to a file using pickle.</p>
+<p>Returns true on success.
+Returns false on failure.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def dumps(filename: str, data: Any) -&gt; bool:
+    &#34;&#34;&#34;
+    Dumps data to a file using pickle.
+
+    Returns true on success.
+    Returns false on failure.
+    &#34;&#34;&#34;
+    try:
+        with open(f&#34;{filename}.pkl&#34;, &#34;wb&#34;) as file:
+            dump(data, file)
+        return True
+    except OSError:
+        return False</code></pre>
+</details>
+</dd>
+<dt id="integer_sequences.helper.loads"><code class="name flex">
+<span>def <span class="ident">loads</span></span>(<span>filename: str) ‑> Any</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Loads data from a file using pickle.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def loads(filename: str) -&gt; Any:
+    &#34;&#34;&#34;
+    Loads data from a file using pickle.
+    &#34;&#34;&#34;
+    with open(f&#34;{filename}.pkl&#34;, &#34;rb&#34;) as pickle:
+        return load(pickle)</code></pre>
+</details>
+</dd>
 </dl>
 </section>
 <section>
@@ -144,6 +207,8 @@ To be called from tests.</p>
 <li><code><a title="integer_sequences.helper.assert_equal" href="#integer_sequences.helper.assert_equal">assert_equal</a></code></li>
 <li><code><a title="integer_sequences.helper.check_item_list" href="#integer_sequences.helper.check_item_list">check_item_list</a></code></li>
 <li><code><a title="integer_sequences.helper.check_key_dict" href="#integer_sequences.helper.check_key_dict">check_key_dict</a></code></li>
+<li><code><a title="integer_sequences.helper.dumps" href="#integer_sequences.helper.dumps">dumps</a></code></li>
+<li><code><a title="integer_sequences.helper.loads" href="#integer_sequences.helper.loads">loads</a></code></li>
 </ul>
 </li>
 </ul>

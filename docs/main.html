@@ -29,23 +29,24 @@
 <pre><code class="python"># ! /home/dan/miniconda3/bin/conda &#34;run -n internship python&#34;
 # -*- coding: utf-8 -*-
 from typing import Any
-from os import getcwd, listdir
+from os import listdir
 from os.path import join, isfile
 
 # Own
 from generator import XESTransformator
 
+from helper import DATAPATH
+
 if __name__ == &#34;__main__&#34;:
     # === anything below this line is testing code === #
     transformer = XESTransformator()
 
-    test_log = &#34;./data/small_log.xes&#34;
+    test_log = &#34;./test/sample_log.xes&#34;
 
-    path_to_datasets = join(getcwd(), &#34;data&#34;)
     DATASETS = [
-        join(path_to_datasets, file)
-        for file in listdir(path_to_datasets)
-        if isfile(join(path_to_datasets, file))
+        join(DATAPATH, file)
+        for file in listdir(DATAPATH)
+        if isfile(join(DATAPATH, file))
     ]
 
     transformed = transformer.transform(test_log)

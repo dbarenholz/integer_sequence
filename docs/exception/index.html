@@ -31,8 +31,9 @@
     MissingRequiredParameter,
     MissingItem,
     NotYetImplemented,
-    UnsupportedOrInvalidLogFormat,
+    InvalidLogFormat,
     InvalidElementPassed,
+    ParsingError,
 )
 
 __all__ = [
@@ -40,8 +41,9 @@ __all__ = [
     &#34;MissingRequiredParameter&#34;,
     &#34;MissingItem&#34;,
     &#34;NotYetImplemented&#34;,
-    &#34;UnsupportedOrInvalidLogFormat&#34;,
+    &#34;InvalidLogFormat&#34;,
     &#34;InvalidElementPassed&#34;,
+    &#34;ParsingError&#34;,
 ]</code></pre>
 </details>
 </section>
@@ -140,6 +142,42 @@ or when a length is smaller than the required number of parameters for a generat
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li>builtins.ValueError</li>
+<li>builtins.Exception</li>
+<li>builtins.BaseException</li>
+</ul>
+</dd>
+<dt id="integer_sequences.exception.InvalidLogFormat"><code class="flex name class">
+<span>class <span class="ident">InvalidLogFormat</span></span>
+<span>(</span><span>filepath: str, message: str = 'Cannot parse file located at %s.')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Raised when an unsupported or invalid log format is given to the XES transformator.</p>
+<h2 id="attributes">Attributes</h2>
+<p>filepath &ndash; the path to the file provided</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class InvalidLogFormat(Exception):
+    &#34;&#34;&#34;
+    Raised when an unsupported or invalid log format is given to the XES transformator.
+
+    Attributes:
+      filepath -- the path to the file provided
+    &#34;&#34;&#34;
+
+    def __init__(
+        self, filepath: str, message: str = &#34;Cannot parse file located at %s.&#34;
+    ) -&gt; None:
+        self.filepath = filepath
+        self.message = message % filepath
+        super().__init__(self.message)
+
+    def __repr__(self) -&gt; str:
+        return f&#34;{self.filepath} -&gt; {self.message}&#34;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
 <li>builtins.Exception</li>
 <li>builtins.BaseException</li>
 </ul>
@@ -264,35 +302,35 @@ container &ndash; list or dictionary that was supposed to contain item</p></div>
 <li>builtins.BaseException</li>
 </ul>
 </dd>
-<dt id="integer_sequences.exception.UnsupportedOrInvalidLogFormat"><code class="flex name class">
-<span>class <span class="ident">UnsupportedOrInvalidLogFormat</span></span>
-<span>(</span><span>filepath: str, message: str = 'Cannot parse file located at %s.')</span>
+<dt id="integer_sequences.exception.ParsingError"><code class="flex name class">
+<span>class <span class="ident">ParsingError</span></span>
+<span>(</span><span>filepath: str, reason: str)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Raised when an unsupported or invalid log format is given to the XES transformator.</p>
+<div class="desc"><p>Raised when the XES transformator cannot parse the event log.</p>
 <h2 id="attributes">Attributes</h2>
-<p>filepath &ndash; the path to the file provided</p></div>
+<p>filepath &ndash; path to log
+reason &ndash; reason why parsing fails</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class UnsupportedOrInvalidLogFormat(Exception):
+<pre><code class="python">class ParsingError(Exception):
     &#34;&#34;&#34;
-    Raised when an unsupported or invalid log format is given to the XES transformator.
+    Raised when the XES transformator cannot parse the event log.
 
     Attributes:
-      filepath -- the path to the file provided
+      filepath -- path to log
+      reason -- reason why parsing fails
     &#34;&#34;&#34;
 
-    def __init__(
-        self, filepath: str, message: str = &#34;Cannot parse file located at %s.&#34;
-    ) -&gt; None:
+    def __init__(self, filepath: str, reason: str) -&gt; None:
         self.filepath = filepath
-        self.message = message % filepath
-        super().__init__(self.message)
+        self.reason = reason
+        super().__init__(reason)
 
     def __repr__(self) -&gt; str:
-        return f&#34;{self.filepath} -&gt; {self.message}&#34;</code></pre>
+        return f&#34;{self.filepath} -&gt; {self.reason}&#34;</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -328,6 +366,9 @@ container &ndash; list or dictionary that was supposed to contain item</p></div>
 <h4><code><a title="integer_sequences.exception.InvalidLengthException" href="#integer_sequences.exception.InvalidLengthException">InvalidLengthException</a></code></h4>
 </li>
 <li>
+<h4><code><a title="integer_sequences.exception.InvalidLogFormat" href="#integer_sequences.exception.InvalidLogFormat">InvalidLogFormat</a></code></h4>
+</li>
+<li>
 <h4><code><a title="integer_sequences.exception.MissingItem" href="#integer_sequences.exception.MissingItem">MissingItem</a></code></h4>
 </li>
 <li>
@@ -337,7 +378,7 @@ container &ndash; list or dictionary that was supposed to contain item</p></div>
 <h4><code><a title="integer_sequences.exception.NotYetImplemented" href="#integer_sequences.exception.NotYetImplemented">NotYetImplemented</a></code></h4>
 </li>
 <li>
-<h4><code><a title="integer_sequences.exception.UnsupportedOrInvalidLogFormat" href="#integer_sequences.exception.UnsupportedOrInvalidLogFormat">UnsupportedOrInvalidLogFormat</a></code></h4>
+<h4><code><a title="integer_sequences.exception.ParsingError" href="#integer_sequences.exception.ParsingError">ParsingError</a></code></h4>
 </li>
 </ul>
 </li>

@@ -1,5 +1,8 @@
 # Typing
 from typing import Any, Dict, List
+from os import getcwd
+from os.path import join
+from pickle import dump, load
 
 # Own
 from exception import MissingItem
@@ -39,3 +42,33 @@ def assert_equal(expected: Any, result: Any) -> None:
     :raises AssertionError: when equality fails
     """
     assert expected == result
+
+
+def dumps(filename: str, data: Any) -> bool:
+    """
+    Dumps data to a file using pickle.
+
+    Returns true on success.
+    Returns false on failure.
+    """
+    try:
+        with open(f"{filename}.pkl", "wb") as file:
+            dump(data, file)
+        return True
+    except OSError:
+        return False
+
+
+def loads(filename: str) -> Any:
+    """
+    Loads data from a file using pickle.
+    """
+    with open(f"{filename}.pkl", "rb") as pickle:
+        return load(pickle)
+
+
+# Paths
+ROOTPATH = getcwd()
+DATAPATH = join(ROOTPATH, "data")
+LOGPATH = join(ROOTPATH, "logs")
+TESTPATH = join(ROOTPATH, "test")

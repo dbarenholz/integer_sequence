@@ -1252,7 +1252,7 @@ Initialises the XESTransformator class.</p></div>
 
         Raises `FileNotFoundError` if check 0 fails.
         Raises `PermissionError` if check 1 fails.
-        Raises `UnsupportedOrInvalidLogFormat` if check 2 fails.
+        Raises `InvalidLogFormat` if check 2 fails.
         &#34;&#34;&#34;
         # Check 0: Did we get a file?
         if not isfile(file):
@@ -1264,14 +1264,15 @@ Initialises the XESTransformator class.</p></div>
 
         # Check 2: Is the extension in one of the readable ones?
         if not any([True for ext in self.readable_exts if ext in file]):
-            raise UnsupportedOrInvalidLogFormat(filepath=file)
+            raise InvalidLogFormat(filepath=file)
 
-    def __build_mapping(self, root: ET.Element) -&gt; Dict[str, int]:
+    def __build_mapping(self, root: ET.Element, file: str) -&gt; Dict[str, int]:
         &#34;&#34;&#34;
         Builds a mapping from key (XES concept:name) to integer.
 
         Parameters:
           root -- The root element (`&lt;log&gt;`) of an XES log file.
+          file -- Path to the file, used for reporting errors.
 
         Returns a dictionary mapping a string (key) to an integer.
         &#34;&#34;&#34;
@@ -1285,8 +1286,10 @@ Initialises the XESTransformator class.</p></div>
         )
 
         if dictionary_root_field is None:
-            raise UnsupportedOrInvalidLogFormat(
-                filepath=&#34;N/A&#34;, message=&#34;Error while building mapping.&#34;
+            raise ParsingError(
+                filepath=file,
+                reason=&#34;&#39;meta_concept:named_events_total&#39; is not&#34;
+                + &#34;present in the log. Does your log adhere to the OpenXES standard?&#34;,
             )
 
         # Initialise the mapping as empty dictionary
@@ -1343,10 +1346,15 @@ Initialises the XESTransformator class.</p></div>
           gzipped -- Boolean indicating whether or not the file is gzipped.
                      False by default.
         &#34;&#34;&#34;
-        if gzipped:
-            with gzip.open(file) as unzipped_file:
-                return ET.parse(unzipped_file)
-        return ET.parse(file)
+        try:
+            if gzipped:
+                with gzip.open(file) as unzipped_file:
+                    return ET.parse(unzipped_file)
+            return ET.parse(file)
+        except ET.ParseError:
+            raise ParsingError(
+                filepath=file, reason=&#34;Element Tree ParseError was raised.&#34;
+            )
 
     def __parse(self, file: str) -&gt; ET.Element:
         &#34;&#34;&#34;
@@ -1362,7 +1370,7 @@ Initialises the XESTransformator class.</p></div>
 
     # Transforming methods
     def __convert_trace(
-        self, trace: ET.Element, mapping: Dict[str, int]
+        self, trace: ET.Element, mapping: Dict[str, int], file: str
     ) -&gt; Tuple[int, ...]:
         &#34;&#34;&#34;
         Converts a single trace element into a tuple of integers.
@@ -1370,6 +1378,7 @@ Initialises the XESTransformator class.</p></div>
         Parameters:
           trace -- The trace element (`&lt;trace&gt;`) to convert.
           mapping -- The mapping that defines how to convert.
+          file -- Path to file, used for logging.
 
         Returns a tuple of integers representing a trace according to some mapping.
         &#34;&#34;&#34;
@@ -1381,19 +1390,22 @@ Initialises the XESTransformator class.</p></div>
         converted = []
         for event in self.__get_all_events(trace):
             key_element = event.find(&#34;.//*[@key=&#39;concept:name&#39;]&#34;)
-            if key_element:
+
+            # Explicit not None check -&gt; Ensures that key element is of type Element.
+            if key_element is not None:
                 key_itself = key_element.attrib[&#34;value&#34;]
                 converted.append(mapping[key_itself])
             else:
                 # Got None, cannot process this file.
-                raise UnsupportedOrInvalidLogFormat(
-                    filepath=&#34;N/A&#34;, message=&#34;Error while converting a trace.&#34;
+                raise ParsingError(
+                    filepath=file,
+                    reason=&#34;Cannot find key elements while transforming traces.&#34;,
                 )
 
         return tuple(converted)
 
     def __make_log(
-        self, root: ET.Element, mapping: Dict[str, int]
+        self, root: ET.Element, mapping: Dict[str, int], file: str
     ) -&gt; List[Tuple[int, ...]]:
         &#34;&#34;&#34;
         Makes a log, given a root element and a mapping dictionary.
@@ -1401,6 +1413,7 @@ Initialises the XESTransformator class.</p></div>
         Parameters:
           root -- the root element (`&lt;log&gt;`) of an XES log.
           mapping -- a mapping from key (XES concept:name) to integer.
+          file -- Path to file, used for logging.
 
         Returns a transformed log.
         &#34;&#34;&#34;
@@ -1415,7 +1428,7 @@ Initialises the XESTransformator class.</p></div>
         # Iterate over all traces
         for trace in self.__get_all_traces(root):
             # Convert a single trace and add it to the log
-            converted_trace = self.__convert_trace(trace, mapping)
+            converted_trace = self.__convert_trace(trace, mapping, file)
             log.append(converted_trace)
 
         return log
@@ -1436,10 +1449,10 @@ Initialises the XESTransformator class.</p></div>
         root = self.__parse(log)
 
         # Build the name mapping
-        name_mapping = self.__build_mapping(root)
+        name_mapping = self.__build_mapping(root, log)
 
         # Build the log
-        return self.__make_log(root, name_mapping)</code></pre>
+        return self.__make_log(root, name_mapping, log)</code></pre>
 </details>
 <h3>Instance variables</h3>
 <dl>
@@ -1451,23 +1464,25 @@ Initialises the XESTransformator class.</p></div>
 <h3>Methods</h3>
 <dl>
 <dt id="integer_sequences.generator.XESTransformator._XESTransformator__build_mapping"><code class="name flex">
-<span>def <span class="ident">_XESTransformator__build_mapping</span></span>(<span>self, root: xml.etree.ElementTree.Element) ‑> Dict[str, int]</span>
+<span>def <span class="ident">_XESTransformator__build_mapping</span></span>(<span>self, root: xml.etree.ElementTree.Element, file: str) ‑> Dict[str, int]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Builds a mapping from key (XES concept:name) to integer.</p>
 <h2 id="parameters">Parameters</h2>
-<p>root &ndash; The root element (<code>&lt;log&gt;</code>) of an XES log file.</p>
+<p>root &ndash; The root element (<code>&lt;log&gt;</code>) of an XES log file.
+file &ndash; Path to the file, used for reporting errors.</p>
 <p>Returns a dictionary mapping a string (key) to an integer.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def __build_mapping(self, root: ET.Element) -&gt; Dict[str, int]:
+<pre><code class="python">def __build_mapping(self, root: ET.Element, file: str) -&gt; Dict[str, int]:
     &#34;&#34;&#34;
     Builds a mapping from key (XES concept:name) to integer.
 
     Parameters:
       root -- The root element (`&lt;log&gt;`) of an XES log file.
+      file -- Path to the file, used for reporting errors.
 
     Returns a dictionary mapping a string (key) to an integer.
     &#34;&#34;&#34;
@@ -1481,8 +1496,10 @@ Initialises the XESTransformator class.</p></div>
     )
 
     if dictionary_root_field is None:
-        raise UnsupportedOrInvalidLogFormat(
-            filepath=&#34;N/A&#34;, message=&#34;Error while building mapping.&#34;
+        raise ParsingError(
+            filepath=file,
+            reason=&#34;&#39;meta_concept:named_events_total&#39; is not&#34;
+            + &#34;present in the log. Does your log adhere to the OpenXES standard?&#34;,
         )
 
     # Initialise the mapping as empty dictionary
@@ -1515,7 +1532,7 @@ Check 2: Check if the extension is one that we can parse.</p>
 <p>file &ndash; The file (as string) to check. Can be relative or absolute path.</p>
 <p>Raises <code>FileNotFoundError</code> if check 0 fails.
 Raises <code>PermissionError</code> if check 1 fails.
-Raises <code>UnsupportedOrInvalidLogFormat</code> if check 2 fails.</p></div>
+Raises <code>InvalidLogFormat</code> if check 2 fails.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1535,7 +1552,7 @@ Raises <code>UnsupportedOrInvalidLogFormat</code> if check 2 fails.</p></div>
 
     Raises `FileNotFoundError` if check 0 fails.
     Raises `PermissionError` if check 1 fails.
-    Raises `UnsupportedOrInvalidLogFormat` if check 2 fails.
+    Raises `InvalidLogFormat` if check 2 fails.
     &#34;&#34;&#34;
     # Check 0: Did we get a file?
     if not isfile(file):
@@ -1547,24 +1564,25 @@ Raises <code>UnsupportedOrInvalidLogFormat</code> if check 2 fails.</p></div>
 
     # Check 2: Is the extension in one of the readable ones?
     if not any([True for ext in self.readable_exts if ext in file]):
-        raise UnsupportedOrInvalidLogFormat(filepath=file)</code></pre>
+        raise InvalidLogFormat(filepath=file)</code></pre>
 </details>
 </dd>
 <dt id="integer_sequences.generator.XESTransformator._XESTransformator__convert_trace"><code class="name flex">
-<span>def <span class="ident">_XESTransformator__convert_trace</span></span>(<span>self, trace: xml.etree.ElementTree.Element, mapping: Dict[str, int]) ‑> Tuple[int, ...]</span>
+<span>def <span class="ident">_XESTransformator__convert_trace</span></span>(<span>self, trace: xml.etree.ElementTree.Element, mapping: Dict[str, int], file: str) ‑> Tuple[int, ...]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Converts a single trace element into a tuple of integers.</p>
 <h2 id="parameters">Parameters</h2>
 <p>trace &ndash; The trace element (<code>&lt;trace&gt;</code>) to convert.
-mapping &ndash; The mapping that defines how to convert.</p>
+mapping &ndash; The mapping that defines how to convert.
+file &ndash; Path to file, used for logging.</p>
 <p>Returns a tuple of integers representing a trace according to some mapping.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def __convert_trace(
-    self, trace: ET.Element, mapping: Dict[str, int]
+    self, trace: ET.Element, mapping: Dict[str, int], file: str
 ) -&gt; Tuple[int, ...]:
     &#34;&#34;&#34;
     Converts a single trace element into a tuple of integers.
@@ -1572,6 +1590,7 @@ mapping &ndash; The mapping that defines how to convert.</p>
     Parameters:
       trace -- The trace element (`&lt;trace&gt;`) to convert.
       mapping -- The mapping that defines how to convert.
+      file -- Path to file, used for logging.
 
     Returns a tuple of integers representing a trace according to some mapping.
     &#34;&#34;&#34;
@@ -1583,13 +1602,16 @@ mapping &ndash; The mapping that defines how to convert.</p>
     converted = []
     for event in self.__get_all_events(trace):
         key_element = event.find(&#34;.//*[@key=&#39;concept:name&#39;]&#34;)
-        if key_element:
+
+        # Explicit not None check -&gt; Ensures that key element is of type Element.
+        if key_element is not None:
             key_itself = key_element.attrib[&#34;value&#34;]
             converted.append(mapping[key_itself])
         else:
             # Got None, cannot process this file.
-            raise UnsupportedOrInvalidLogFormat(
-                filepath=&#34;N/A&#34;, message=&#34;Error while converting a trace.&#34;
+            raise ParsingError(
+                filepath=file,
+                reason=&#34;Cannot find key elements while transforming traces.&#34;,
             )
 
     return tuple(converted)</code></pre>
@@ -1650,20 +1672,21 @@ mapping &ndash; The mapping that defines how to convert.</p>
 </details>
 </dd>
 <dt id="integer_sequences.generator.XESTransformator._XESTransformator__make_log"><code class="name flex">
-<span>def <span class="ident">_XESTransformator__make_log</span></span>(<span>self, root: xml.etree.ElementTree.Element, mapping: Dict[str, int]) ‑> List[Tuple[int, ...]]</span>
+<span>def <span class="ident">_XESTransformator__make_log</span></span>(<span>self, root: xml.etree.ElementTree.Element, mapping: Dict[str, int], file: str) ‑> List[Tuple[int, ...]]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Makes a log, given a root element and a mapping dictionary.</p>
 <h2 id="parameters">Parameters</h2>
 <p>root &ndash; the root element (<code>&lt;log&gt;</code>) of an XES log.
-mapping &ndash; a mapping from key (XES concept:name) to integer.</p>
+mapping &ndash; a mapping from key (XES concept:name) to integer.
+file &ndash; Path to file, used for logging.</p>
 <p>Returns a transformed log.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def __make_log(
-    self, root: ET.Element, mapping: Dict[str, int]
+    self, root: ET.Element, mapping: Dict[str, int], file: str
 ) -&gt; List[Tuple[int, ...]]:
     &#34;&#34;&#34;
     Makes a log, given a root element and a mapping dictionary.
@@ -1671,6 +1694,7 @@ mapping &ndash; a mapping from key (XES concept:name) to integer.</p>
     Parameters:
       root -- the root element (`&lt;log&gt;`) of an XES log.
       mapping -- a mapping from key (XES concept:name) to integer.
+      file -- Path to file, used for logging.
 
     Returns a transformed log.
     &#34;&#34;&#34;
@@ -1685,7 +1709,7 @@ mapping &ndash; a mapping from key (XES concept:name) to integer.</p>
     # Iterate over all traces
     for trace in self.__get_all_traces(root):
         # Convert a single trace and add it to the log
-        converted_trace = self.__convert_trace(trace, mapping)
+        converted_trace = self.__convert_trace(trace, mapping, file)
         log.append(converted_trace)
 
     return log</code></pre>
@@ -1740,10 +1764,15 @@ False by default.</p></div>
       gzipped -- Boolean indicating whether or not the file is gzipped.
                  False by default.
     &#34;&#34;&#34;
-    if gzipped:
-        with gzip.open(file) as unzipped_file:
-            return ET.parse(unzipped_file)
-    return ET.parse(file)</code></pre>
+    try:
+        if gzipped:
+            with gzip.open(file) as unzipped_file:
+                return ET.parse(unzipped_file)
+        return ET.parse(file)
+    except ET.ParseError:
+        raise ParsingError(
+            filepath=file, reason=&#34;Element Tree ParseError was raised.&#34;
+        )</code></pre>
 </details>
 </dd>
 <dt id="integer_sequences.generator.XESTransformator.transform"><code class="name flex">
@@ -1774,10 +1803,10 @@ False by default.</p></div>
     root = self.__parse(log)
 
     # Build the name mapping
-    name_mapping = self.__build_mapping(root)
+    name_mapping = self.__build_mapping(root, log)
 
     # Build the log
-    return self.__make_log(root, name_mapping)</code></pre>
+    return self.__make_log(root, name_mapping, log)</code></pre>
 </details>
 </dd>
 </dl>

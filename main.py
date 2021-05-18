@@ -1,23 +1,24 @@
 # ! /home/dan/miniconda3/bin/conda "run -n internship python"
 # -*- coding: utf-8 -*-
 from typing import Any
-from os import getcwd, listdir
+from os import listdir
 from os.path import join, isfile
 
 # Own
 from generator import XESTransformator
 
+from helper import DATAPATH
+
 if __name__ == "__main__":
     # === anything below this line is testing code === #
     transformer = XESTransformator()
 
-    test_log = "./data/small_log.xes"
+    test_log = "./test/sample_log.xes"
 
-    path_to_datasets = join(getcwd(), "data")
     DATASETS = [
-        join(path_to_datasets, file)
-        for file in listdir(path_to_datasets)
-        if isfile(join(path_to_datasets, file))
+        join(DATAPATH, file)
+        for file in listdir(DATAPATH)
+        if isfile(join(DATAPATH, file))
     ]
 
     transformed = transformer.transform(test_log)

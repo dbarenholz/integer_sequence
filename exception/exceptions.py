@@ -90,7 +90,7 @@ class MissingItem(Exception):
         return f"{self.item}, {self.container} -> {self.message}"
 
 
-class UnsupportedOrInvalidLogFormat(Exception):
+class InvalidLogFormat(Exception):
     """
     Raised when an unsupported or invalid log format is given to the XES transformator.
 
@@ -107,6 +107,24 @@ class UnsupportedOrInvalidLogFormat(Exception):
 
     def __repr__(self) -> str:
         return f"{self.filepath} -> {self.message}"
+
+
+class ParsingError(Exception):
+    """
+    Raised when the XES transformator cannot parse the event log.
+
+    Attributes:
+      filepath -- path to log
+      reason -- reason why parsing fails
+    """
+
+    def __init__(self, filepath: str, reason: str) -> None:
+        self.filepath = filepath
+        self.reason = reason
+        super().__init__(reason)
+
+    def __repr__(self) -> str:
+        return f"{self.filepath} -> {self.reason}"
 
 
 class InvalidElementPassed(Exception):
