@@ -45,6 +45,18 @@ class SequenceGenerator:
             "pascal": {"parameters": ["first"], "method": self.__pascal_wrapper},
             "recaman": {"parameters": ["first"], "method": self.__recaman_wrapper},
             "catalan": {"parameters": ["first"], "method": self.__catalan_wrapper},
+            "range_up": {
+                "parameters": ["first", "step"],
+                "method": self.__range_up_wrapper,
+            },
+            "range_down": {
+                "parameters": ["last", "step"],
+                "method": self.__range_down_wrapper,
+            },
+            "long_term_dependency": {
+                "parameters": ["first", "second", "third", "fourth", "fifth"],
+                "method": self.__long_term_dependency_wrapper,
+            },
         }
         """A config object that holds, per implemented metod,
         a list of required parameters and a reference to the method."""
@@ -109,28 +121,31 @@ class SequenceGenerator:
         if self.length == 1:
             return
 
-        def next_row(row: List[int]) -> Generator:
+        def next_row(row: List[int]) -> List[int]:
             """
             Computes the next row in the triangle of pascal.
 
             Parameters:
               row -- The current row.
 
-            Returns a generator yielding elements of the next row.
+            Returns a the next row.
             """
+            lst = []
             tmp = 0
             for val in row:
-                yield tmp + val
+                lst.append(tmp + val)
                 tmp = val
-            yield first
+            lst.append(first)
+            return lst
 
         row = [first]
+
         # Keep track of counts, start at 1
         counts = 1
 
         while True:
             # compute the next row
-            next = list(next_row(row))
+            next = next_row(row)
 
             # loop through them
             for item in next:
@@ -254,6 +269,150 @@ class SequenceGenerator:
         **Unsafe** when used in any other place than the generation config dict `SequenceGenerator.config`.
         """
         return self.__catalan(first=params["first"])
+
+    def __range_up(self, first: int = 0, step: int = 1) -> Generator:
+        """
+        Simple range generator that counts up.
+
+        Parameters:
+          first -- The first element of the sequence.
+          step -- The stepsize passed to range
+
+        Returns a generator that generates the sequence.
+        """
+
+        # Use our own generator
+        def range_generator(first: int, step: int) -> Generator:
+            """
+            Internal range generator that counts up.
+            """
+            i = first
+            while True:
+                yield i
+                i += step
+
+        count = 0
+        for i in range_generator(first, step):
+            if count < self.length:
+                yield i
+                count += 1
+            else:
+                break
+
+    def __range_up_wrapper(self, params: Dict[str, int]) -> Generator:
+        """
+        Wrapper method for `self.range_up`.
+        Written so we can have a unified interface to generate traces, given a sequence key.
+
+        **Unsafe** when used in any other place than the generation config dict `SequenceGenerator.config`.
+        """
+        return self.__range_up(first=params["first"], step=params["step"])
+
+    def __range_down(self, last: int = 0, step: int = 1) -> Generator:
+        """
+        Simple range generator that counts down with stepsize `step`
+        such that the last element will be `last`.
+
+        Parameters:
+          last -- The last element of the sequence.
+          step -- The stepsize passed to range
+
+        Returns a generator that generates the sequence.
+        """
+        # Compute highest possible value such that we do not go negative
+        first = last + step * self.length - 1
+        print(f"first elem should be {first}")
+
+        # Use our own generator
+        def range_generator(first: int, step: int) -> Generator:
+            """
+            Internal range generator that counts down.
+            """
+            i = first
+            while True:
+                yield i
+                i -= step
+
+        count = 0
+        for i in range_generator(first, step):
+            if count < self.length:
+                yield i
+                count += 1
+            else:
+                break
+
+    def __range_down_wrapper(self, params: Dict[str, int]) -> Generator:
+        """
+        Wrapper method for `self.range_down`.
+        Written so we can have a unified interface to generate traces, given a sequence key.
+
+        **Unsafe** when used in any other place than the generation config dict `SequenceGenerator.config`.
+        """
+        return self.__range_down(last=params["last"], step=params["step"])
+
+    def __long_term_dependency(
+        self,
+        first: int = 0,
+        second: int = 0,
+        third: int = 0,
+        fourth: int = 0,
+        fifth: int = 0,
+    ) -> Generator:
+        """
+        Generalization of Fibonacci sequence with increased dependency, where F(n) = F(n-1) + F(n-5).
+        In other words, the 6th term is equal to the sum of the 5th and the 1st.
+        """
+        count = 0
+
+        # Basecases
+        should_check = [first, second, third, fourth, fifth]
+        for num in should_check:
+            if count < self.length:
+                yield num
+                count += 1
+            else:
+                return
+
+        # Assume we want the next element in general case
+
+        # Need to keep points to 5 previous elements
+        n_minus_1 = fifth
+        n_minus_2 = fourth
+        n_minus_3 = third
+        n_minus_4 = second
+        n_minus_5 = first
+
+        while count < self.length:
+            # Increment count
+            count += 1
+
+            # Compute next number and yield it
+            n = n_minus_5 + n_minus_1
+            yield n
+
+            # Update values
+            n_minus_1, n_minus_2, n_minus_3, n_minus_4, n_minus_5 = (
+                n,
+                n_minus_1,
+                n_minus_2,
+                n_minus_3,
+                n_minus_4,
+            )
+
+    def __long_term_dependency_wrapper(self, params: Dict[str, int]) -> Generator:
+        """
+        Wrapper method for `self.long_term_dependency`.
+        Written so we can have a unified interface to generate traces, given a sequence key.
+
+        **Unsafe** when used in any other place than the generation config dict `SequenceGenerator.config`.
+        """
+        return self.__long_term_dependency(
+            first=params["first"],
+            second=params["second"],
+            third=params["third"],
+            fourth=params["fourth"],
+            fifth=params["fifth"],
+        )
 
     # Private getters
     def __get_params(self, seq_name: str) -> List[str]:
@@ -420,6 +579,7 @@ class SequenceGenerator:
 
         # It exists, check for param mismatch
         required_params = self.__get_params(seq_name)
+
         self.__check_params(kwargs, required_params)
 
         # required (and possibly more) params present -- retrieve reference to generator
