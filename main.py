@@ -1,33 +1,23 @@
 # ! /home/dan/miniconda3/bin/conda "run -n internship python"
 # -*- coding: utf-8 -*-
 from typing import Any
-from os import listdir
-from os.path import join, isfile
 
 # Own
-from generator import XESTransformator
+from generator import SequenceGenerator
 
-from helper import DATAPATH
 
 if __name__ == "__main__":
     # === anything below this line is testing code === #
-    transformer = XESTransformator()
+    generator = SequenceGenerator()
 
-    test_log = "./test/sample_log.xes"
-
-    DATASETS = [
-        join(DATAPATH, file)
-        for file in listdir(DATAPATH)
-        if isfile(join(DATAPATH, file))
-    ]
-
-    transformed = transformer.transform(test_log)
+    trace = generator.generate_trace(
+        "short_term_single_dependency", first=1, constant=7
+    )
+    print(list(trace))
 
     def show(log: Any) -> None:
         for i, l in enumerate(log):
             print(f"Trace {i}: {l}")
-
-    show(transformed)
 
 
 else:

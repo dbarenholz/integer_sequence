@@ -41,6 +41,7 @@ class SequenceGenerator:
         self.length: int = wanted_length
         """The amount of items to generate."""
         self.config: Dict[str, Dict[str, Any]] = {
+            # fib = short term, multiple dependencies
             "fib": {"parameters": ["first", "second"], "method": self.__fib_wrapper},
             "pascal": {"parameters": ["first"], "method": self.__pascal_wrapper},
             "recaman": {"parameters": ["first"], "method": self.__recaman_wrapper},
@@ -53,9 +54,27 @@ class SequenceGenerator:
                 "parameters": ["last", "step"],
                 "method": self.__range_down_wrapper,
             },
+            # long term, multiple dependency
             "long_term_dependency": {
                 "parameters": ["first", "second", "third", "fourth", "fifth"],
                 "method": self.__long_term_dependency_wrapper,
+            },
+            # long term, singular dependency
+            "long_term_single_dependency": {
+                "parameters": [
+                    "first",
+                    "second",
+                    "third",
+                    "fourth",
+                    "fifth",
+                    "constant",
+                ],
+                "method": self.__long_term_single_dependency_wrapper,
+            },
+            # short term, singular dependency
+            "short_term_single_dependency": {
+                "parameters": ["first", "constant"],
+                "method": self.__short_term_single_dependency_wrapper,
             },
         }
         """A config object that holds, per implemented metod,
@@ -321,7 +340,6 @@ class SequenceGenerator:
         """
         # Compute highest possible value such that we do not go negative
         first = last + step * self.length - 1
-        print(f"first elem should be {first}")
 
         # Use our own generator
         def range_generator(first: int, step: int) -> Generator:
@@ -412,6 +430,108 @@ class SequenceGenerator:
             third=params["third"],
             fourth=params["fourth"],
             fifth=params["fifth"],
+        )
+
+    def __long_term_single_dependency(
+        self,
+        first: int = 0,
+        second: int = 0,
+        third: int = 0,
+        fourth: int = 0,
+        fifth: int = 0,
+        constant: int = 1,
+    ) -> Generator:
+        """
+        F(n) = F(n-5) * c.
+        """
+        count = 0
+
+        # Basecases
+        should_check = [first, second, third, fourth, fifth]
+        for num in should_check:
+            if count < self.length:
+                yield num
+                count += 1
+            else:
+                return
+
+        # Assume we want the next element in general case
+
+        # Need to keep points to 5 previous elements
+        n_minus_1 = fifth
+        n_minus_2 = fourth
+        n_minus_3 = third
+        n_minus_4 = second
+        n_minus_5 = first
+
+        while count < self.length:
+            # Increment count
+            count += 1
+
+            # Compute next number and yield it
+            n = n_minus_5 * constant
+            yield n
+
+            # Update values
+            n_minus_1, n_minus_2, n_minus_3, n_minus_4, n_minus_5 = (
+                n,
+                n_minus_1,
+                n_minus_2,
+                n_minus_3,
+                n_minus_4,
+            )
+
+    def __long_term_single_dependency_wrapper(
+        self, params: Dict[str, int]
+    ) -> Generator:
+        """
+        Wrapper method for `self.__long_term_single_dependency`.
+        Written so we can have a unified interface to generate traces, given a sequence key.
+
+        **Unsafe** when used in any other place than the generation config dict `SequenceGenerator.config`.
+        """
+        return self.__long_term_single_dependency(
+            first=params["first"],
+            second=params["second"],
+            third=params["third"],
+            fourth=params["fourth"],
+            fifth=params["fifth"],
+            constant=params["constant"],
+        )
+
+    def __short_term_single_dependency(
+        self, first: int = 1, constant: int = 2
+    ) -> Generator:
+        """
+        A short term dependency. F(n) = F(n-1) * c
+        """
+        print(f"set constant to {constant}")
+        yield first
+        # If you only want 1 number, for some reason?
+        if self.length == 1:
+            return
+
+        count = 0
+        while count < self.length - 1:
+            # Increment count
+            count += 1
+            # Compute next value
+            current = first * constant
+            yield current
+            # Update values
+            first = current
+
+    def __short_term_single_dependency_wrapper(
+        self, params: Dict[str, int]
+    ) -> Generator:
+        """
+        Wrapper method for `self.range_down`.
+        Written so we can have a unified interface to generate traces, given a sequence key.
+
+        **Unsafe** when used in any other place than the generation config dict `SequenceGenerator.config`.
+        """
+        return self.__short_term_single_dependency(
+            first=params["first"], constant=params["constant"]
         )
 
     # Private getters
@@ -577,6 +697,8 @@ class SequenceGenerator:
         except MissingItem:
             raise NotYetImplemented(seq_name)
 
+        print(f"With params: {kwargs}")
+
         # It exists, check for param mismatch
         required_params = self.__get_params(seq_name)
 
@@ -587,6 +709,9 @@ class SequenceGenerator:
 
         # build params to pass through
         method_params = self.__build_params(kwargs, required_params)
+
+        print(f"method: {method}")
+        print(f"built params: {method_params}")
 
         # call the function, and return its result
         return method(method_params)

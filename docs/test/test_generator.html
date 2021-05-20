@@ -42,7 +42,17 @@ from exception import (
     NotYetImplemented,
     MissingRequiredParameter,
 )
-from sequences import FIB, PASCAL, CATALAN, RECAMAN, UP, DOWN, LONGTERM
+from sequences import (
+    FIB,
+    PASCAL,
+    CATALAN,
+    RECAMAN,
+    UP,
+    DOWN,
+    LONGTERM,
+    LONGTERM_SINGLE,
+    SHORTTERM_SINGLE,
+)
 
 # Incorrect initialisation
 def negative_length_should_raise_test() -&gt; None:
@@ -159,6 +169,30 @@ def long_dependency_missing_param(generator: SequenceGenerator) -&gt; None:
         generator.generate_trace(&#34;long_term_dependency&#34;, i_do_not_matter=True)
 
 
+def long_single_missing_param(generator: SequenceGenerator) -&gt; None:
+    &#34;&#34;&#34;
+    A call to `SequenceGenerator.generate_trace()` with known sequence key `seq_name` parameter,
+    but missing other parameters should throw `MissingRequiredParameter`.
+    This test also tests that parameters that are not required can be safely added, since the program ignores them.
+    &#34;&#34;&#34;
+    with pytest.raises(MissingRequiredParameter):
+        # Error: Missing &#39;first&#39;, &#39;second&#39;, &#39;third&#39;, &#39;fourth&#39;, &#39;fifth&#39;, &#39;constant&#39; parameter
+        # Ignored: Supplied &#39;i_do_not_matter&#39; parameter
+        generator.generate_trace(&#34;long_term_single_dependency&#34;, i_do_not_matter=True)
+
+
+def short_single_missing_param(generator: SequenceGenerator) -&gt; None:
+    &#34;&#34;&#34;
+    A call to `SequenceGenerator.generate_trace()` with known sequence key `seq_name` parameter,
+    but missing other parameters should throw `MissingRequiredParameter`.
+    This test also tests that parameters that are not required can be safely added, since the program ignores them.
+    &#34;&#34;&#34;
+    with pytest.raises(MissingRequiredParameter):
+        # Error: Missing &#39;first&#39;, &#39;constant&#39; parameter
+        # Ignored: Supplied &#39;i_do_not_matter&#39; parameter
+        generator.generate_trace(&#34;short_term_single_dependency&#34;, i_do_not_matter=True)
+
+
 # Correct generate_trace calls
 def fib_trace(generator: SequenceGenerator) -&gt; None:
     &#34;&#34;&#34;
@@ -237,6 +271,40 @@ def long_dependency_trace(generator: SequenceGenerator) -&gt; None:
         generator.generate_trace(
             &#34;long_term_dependency&#34;, first=1, second=2, third=3, fourth=4, fifth=5
         )
+    )
+    assert_equal(expected, result)
+
+
+def long_single_trace(generator: SequenceGenerator) -&gt; None:
+    &#34;&#34;&#34;
+    A call to `SequenceGenerator.generate_trace()` with known sequence key `seq_name` parameter,
+    and required other parameters for the `long_term_dependency` sequence generator. Test case is the default sequence list.
+    This test also tests that parameters that are not required can be safely added, since the program ignores them.
+    &#34;&#34;&#34;
+    expected = LONGTERM_SINGLE[0 : generator.length]
+    result = list(
+        generator.generate_trace(
+            &#34;long_term_single_dependency&#34;,
+            first=1,
+            second=2,
+            third=3,
+            fourth=4,
+            fifth=5,
+            constant=5,
+        )
+    )
+    assert_equal(expected, result)
+
+
+def short_single_trace(generator: SequenceGenerator) -&gt; None:
+    &#34;&#34;&#34;
+    A call to `SequenceGenerator.generate_trace()` with known sequence key `seq_name` parameter,
+    and required other parameters for the `short_term_single_dependency` sequence generator. Test case is the default sequence list.
+    This test also tests that parameters that are not required can be safely added, since the program ignores them.
+    &#34;&#34;&#34;
+    expected = SHORTTERM_SINGLE[0 : generator.length]
+    result = list(
+        generator.generate_trace(&#34;short_term_single_dependency&#34;, first=1, constant=7)
     )
     assert_equal(expected, result)
 
@@ -337,6 +405,30 @@ def long_dependency_log_missing_param(generator: SequenceGenerator) -&gt; None:
         generator.generate_log(&#34;long_term_dependency&#34;, i_do_not_matter=True)
 
 
+def long_single_log_missing_param(generator: SequenceGenerator) -&gt; None:
+    &#34;&#34;&#34;
+    A call to `SequenceGenerator.generate_log()` with known sequence key `seq_name` parameter,
+    but missing other parameters should throw `MissingRequiredParameter`.
+    This test also tests that parameters that are not required can be safely added, since the program ignores them.
+    &#34;&#34;&#34;
+    with pytest.raises(MissingRequiredParameter):
+        # Error: Missing &#39;first&#39;, &#39;second&#39;, &#39;third&#39;, &#39;fourth&#39;, &#39;fifth&#39;, &#39;constant&#39; parameter
+        # Ignored: Supplied &#39;i_do_not_matter&#39; parameter
+        generator.generate_log(&#34;long_term_single_dependency&#34;, i_do_not_matter=True)
+
+
+def short_single_log_missing_param(generator: SequenceGenerator) -&gt; None:
+    &#34;&#34;&#34;
+    A call to `SequenceGenerator.generate_log()` with known sequence key `seq_name` parameter,
+    but missing other parameters should throw `MissingRequiredParameter`.
+    This test also tests that parameters that are not required can be safely added, since the program ignores them.
+    &#34;&#34;&#34;
+    with pytest.raises(MissingRequiredParameter):
+        # Error: Missing &#39;first&#39; parameter
+        # Ignored: Supplied &#39;i_do_not_matter&#39; parameter
+        generator.generate_log(&#34;short_term_single_dependency&#34;, i_do_not_matter=True)
+
+
 # Correct generate_log calls
 def fib_log(generator: SequenceGenerator) -&gt; None:
     &#34;&#34;&#34;
@@ -401,7 +493,9 @@ def range_down_log(generator: SequenceGenerator) -&gt; None:
 def long_dependency_log(generator: SequenceGenerator) -&gt; None:
     &#34;&#34;&#34;
     A call to `SequenceGenerator.generate_log()` with known sequence key `seq_name` parameter,
-    and required other parameters for the `long_term_dependency` sequence generator. As opposed to generate_trace, log produces sets of tuples (due to hashing). Test case is the default sequence list, which is the first (and only) element in the set.
+    and required other parameters for the `long_term_dependency` sequence generator.
+    As opposed to generate_trace, log produces sets of tuples (due to hashing).
+    Test case is the default sequence list, which is the first (and only) element in the set.
     &#34;&#34;&#34;
     expected = tuple(LONGTERM[0 : generator.length])
     result = generator.generate_log(
@@ -413,6 +507,43 @@ def long_dependency_log(generator: SequenceGenerator) -&gt; None:
         fifths=[5],
     ).pop()
 
+    assert_equal(expected, result)
+
+
+def long_single_log(generator: SequenceGenerator) -&gt; None:
+    &#34;&#34;&#34;
+    A call to `SequenceGenerator.generate_log()` with known sequence key `seq_name` parameter,
+    and required other parameters for the `long_term_single_dependency` sequence generator.
+    As opposed to generate_trace, log produces sets of tuples (due to hashing).
+    Test case is the default sequence list, which is the first (and only) element in the set.
+    &#34;&#34;&#34;
+    expected = tuple(LONGTERM_SINGLE[0 : generator.length])
+    result = generator.generate_log(
+        &#34;long_term_single_dependency&#34;,
+        firsts=[1],
+        seconds=[2],
+        thirds=[3],
+        fourths=[4],
+        fifths=[5],
+        constants=[5],
+    ).pop()
+
+    assert_equal(expected, result)
+
+
+def short_single_log(generator: SequenceGenerator) -&gt; None:
+    &#34;&#34;&#34;
+    A call to `SequenceGenerator.generate_log()` with known sequence key `seq_name` parameter,
+    and required other parameters for the `short_term_single_dependency` sequence generator.
+    As opposed to generate_trace, log produces sets of tuples (due to hashing).
+    Test case is the default sequence list, which is the first (and only) element in the set.
+    &#34;&#34;&#34;
+    expected = tuple(SHORTTERM_SINGLE[0 : generator.length])
+    result = list(
+        generator.generate_log(
+            &#34;short_term_single_dependency&#34;, firsts=[1], constants=[7]
+        )
+    ).pop()
     assert_equal(expected, result)
 
 
@@ -475,6 +606,11 @@ def catalan_log_multiple_items(generator: SequenceGenerator) -&gt; None:
 
 
 def range_up_log_multiple_items(generator: SequenceGenerator) -&gt; None:
+    &#34;&#34;&#34;
+    A call to `SequenceGenerator.generate_log()` with known sequence key `seq_name` parameter,
+    and required other parameters for the `XXX` sequence generator.
+    Tests that the correct number of traces are generated.
+    &#34;&#34;&#34;
     expected_traces_in_set = 12  # len(firsts) = 3 x len(steps) = 4
     result = generator.generate_log(&#34;range_up&#34;, firsts=[1, 2, 3], steps=[1, 2, 3, 4])
     resulting_traces_in_set = len(result)
@@ -482,6 +618,11 @@ def range_up_log_multiple_items(generator: SequenceGenerator) -&gt; None:
 
 
 def range_down_log_multiple_items(generator: SequenceGenerator) -&gt; None:
+    &#34;&#34;&#34;
+    A call to `SequenceGenerator.generate_log()` with known sequence key `seq_name` parameter,
+    and required other parameters for the `XXX` sequence generator.
+    Tests that the correct number of traces are generated.
+    &#34;&#34;&#34;
     expected_traces_in_set = 12  # len(lasts) = 3 x len(steps) = 4
     result = generator.generate_log(&#34;range_down&#34;, lasts=[3, 2, 1], steps=[4, 3, 2, 1])
     resulting_traces_in_set = len(result)
@@ -489,6 +630,11 @@ def range_down_log_multiple_items(generator: SequenceGenerator) -&gt; None:
 
 
 def long_dependency_log_multiple_items(generator: SequenceGenerator) -&gt; None:
+    &#34;&#34;&#34;
+    A call to `SequenceGenerator.generate_log()` with known sequence key `seq_name` parameter,
+    and required other parameters for the `XXX` sequence generator.
+    Tests that the correct number of traces are generated.
+    &#34;&#34;&#34;
     # 5 x 2 x 3 x 1 x 4
     expected_traces_in_set = 120
     result = generator.generate_log(
@@ -523,6 +669,62 @@ def long_dependency_log_multiple_items_error(generator: SequenceGenerator) -&gt;
             )
 
 
+def long_single_log_multiple_items(generator: SequenceGenerator) -&gt; None:
+    &#34;&#34;&#34;
+    A call to `SequenceGenerator.generate_log()` with known sequence key `seq_name` parameter,
+    and required other parameters for the `long_term_single_dependency` sequence generator.
+    Tests that the correct number of traces are generated.
+    &#34;&#34;&#34;
+    # 5 x 2 x 3 x 1 x 4 x 2
+    expected_traces_in_set = 240
+    result = generator.generate_log(
+        &#34;long_term_single_dependency&#34;,
+        firsts=[1, 2, 3, 4, 5],  # 5
+        seconds=[1, 2],  # 2
+        thirds=[2, 4, 5],  # 3
+        fourths=[5],  # 1
+        fifths=[1, 2, 3, 4],  # 4
+        constants=[5, 10],  # 2
+    )
+
+    resulting_traces_in_set = len(result)
+    assert_equal(expected=expected_traces_in_set, result=resulting_traces_in_set)
+
+
+def long_single_log_multiple_items_error(generator: SequenceGenerator) -&gt; None:
+    &#34;&#34;&#34;
+    A call to `SequenceGenerator.generate_log()` with known sequence key `seq_name` parameter,
+    and required other parameters for the `long_term_dependency` sequence generator.
+    Tests that an exception is thrown: Since long_term_dependency requires AT LEAST 5 parameters,
+    we CANNOT generate lists of length 1, 2, 3, or 4.
+    &#34;&#34;&#34;
+    if generator.length &lt; 5:
+        with pytest.raises(InvalidLengthException):
+            generator.generate_log(
+                &#34;long_term_single_dependency&#34;,
+                firsts=[1, 2, 3],
+                seconds=[1, 2, 3, 4],
+                thirds=[1, 2, 3, 4, 5],
+                fourths=[1, 2, 3, 4, 5],
+                fifths=[1, 2, 3, 4, 5],
+                constants=[5, 10, 15, 20],
+            )
+
+
+def short_single_log_multiple_items(generator: SequenceGenerator) -&gt; None:
+    &#34;&#34;&#34;
+    A call to `SequenceGenerator.generate_log()` with known sequence key `seq_name` parameter,
+    and required other parameters for the `short_term_single_dependency` sequence generator.
+    Tests that the correct number of traces are generated.
+    &#34;&#34;&#34;
+    expected_traces_in_set = 12  # len(firsts) = 4 x len(constants) = 3
+    result = generator.generate_log(
+        &#34;short_term_single_dependency&#34;, firsts=[1, 2, 3, 4], constants=[5, 10, 15]
+    )
+    resulting_traces_in_set = len(result)
+    assert_equal(expected=expected_traces_in_set, result=resulting_traces_in_set)
+
+
 # Test initialisation exceptions
 def test_exceptions() -&gt; None:
     &#34;&#34;&#34;
@@ -551,6 +753,8 @@ def test_generate_trace() -&gt; None:
     range_up_missing_param(generator=generator)
     range_down_missing_param(generator=generator)
     long_dependency_missing_param(generator=generator)
+    long_single_missing_param(generator=generator)
+    short_single_missing_param(generator=generator)
 
     # Normal operation, various lengths
     generators = [
@@ -564,6 +768,8 @@ def test_generate_trace() -&gt; None:
         range_up_trace(generator=generator)
         range_down_trace(generator=generator)
         long_dependency_trace(generator=generator)
+        long_single_trace(generator=generator)
+        short_single_trace(generator=generator)
 
 
 # Test generate_log
@@ -584,6 +790,8 @@ def test_generate_log() -&gt; None:
     range_up_log_missing_param(generator=generator)
     range_down_log_missing_param(generator=generator)
     long_dependency_log_missing_param(generator=generator)
+    long_single_log_missing_param(generator=generator)
+    short_single_log_missing_param(generator=generator)
 
     # Fib wants 1+ param
     generator = SequenceGenerator(wanted_length=1)
@@ -593,6 +801,7 @@ def test_generate_log() -&gt; None:
     generators = [SequenceGenerator(wanted_length=length) for length in [1, 2, 3, 4]]
     for generator in generators:
         long_dependency_log_multiple_items_error(generator=generator)
+        long_single_log_multiple_items_error(generator=generator)
 
     # Normal operation, various lengths
     generators = [SequenceGenerator(wanted_length=length) for length in [10, 50, 100]]
@@ -604,6 +813,8 @@ def test_generate_log() -&gt; None:
         range_up_log(generator=generator)
         range_down_log(generator=generator)
         long_dependency_log(generator=generator)
+        long_single_log(generator=generator)
+        short_single_log(generator=generator)
 
         # Note: wanted_length &lt; required number of params should not be possible to call
         fib_log_multiple_items(generator=generator)
@@ -612,7 +823,9 @@ def test_generate_log() -&gt; None:
         catalan_log_multiple_items(generator=generator)
         range_up_log_multiple_items(generator=generator)
         range_down_log_multiple_items(generator=generator)
-        long_dependency_log_multiple_items(generator=generator)</code></pre>
+        long_dependency_log_multiple_items(generator=generator)
+        long_single_log_multiple_items(generator=generator)
+        short_single_log_multiple_items(generator=generator)</code></pre>
 </details>
 </section>
 <section>
@@ -869,7 +1082,9 @@ This test also tests that parameters that are not required can be safely added, 
 </code></dt>
 <dd>
 <div class="desc"><p>A call to <code>SequenceGenerator.generate_log()</code> with known sequence key <code>seq_name</code> parameter,
-and required other parameters for the <code>long_term_dependency</code> sequence generator. As opposed to generate_trace, log produces sets of tuples (due to hashing). Test case is the default sequence list, which is the first (and only) element in the set.</p></div>
+and required other parameters for the <code>long_term_dependency</code> sequence generator.
+As opposed to generate_trace, log produces sets of tuples (due to hashing).
+Test case is the default sequence list, which is the first (and only) element in the set.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -877,7 +1092,9 @@ and required other parameters for the <code>long_term_dependency</code> sequence
 <pre><code class="python">def long_dependency_log(generator: SequenceGenerator) -&gt; None:
     &#34;&#34;&#34;
     A call to `SequenceGenerator.generate_log()` with known sequence key `seq_name` parameter,
-    and required other parameters for the `long_term_dependency` sequence generator. As opposed to generate_trace, log produces sets of tuples (due to hashing). Test case is the default sequence list, which is the first (and only) element in the set.
+    and required other parameters for the `long_term_dependency` sequence generator.
+    As opposed to generate_trace, log produces sets of tuples (due to hashing).
+    Test case is the default sequence list, which is the first (and only) element in the set.
     &#34;&#34;&#34;
     expected = tuple(LONGTERM[0 : generator.length])
     result = generator.generate_log(
@@ -919,12 +1136,19 @@ This test also tests that parameters that are not required can be safely added, 
 <span>def <span class="ident">long_dependency_log_multiple_items</span></span>(<span>generator: generator.SequenceGenerator.SequenceGenerator) ‑> NoneType</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>A call to <code>SequenceGenerator.generate_log()</code> with known sequence key <code>seq_name</code> parameter,
+and required other parameters for the <code>XXX</code> sequence generator.
+Tests that the correct number of traces are generated.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def long_dependency_log_multiple_items(generator: SequenceGenerator) -&gt; None:
+    &#34;&#34;&#34;
+    A call to `SequenceGenerator.generate_log()` with known sequence key `seq_name` parameter,
+    and required other parameters for the `XXX` sequence generator.
+    Tests that the correct number of traces are generated.
+    &#34;&#34;&#34;
     # 5 x 2 x 3 x 1 x 4
     expected_traces_in_set = 120
     result = generator.generate_log(
@@ -1015,6 +1239,182 @@ This test also tests that parameters that are not required can be safely added, 
     result = list(
         generator.generate_trace(
             &#34;long_term_dependency&#34;, first=1, second=2, third=3, fourth=4, fifth=5
+        )
+    )
+    assert_equal(expected, result)</code></pre>
+</details>
+</dd>
+<dt id="integer_sequences.test.test_generator.long_single_log"><code class="name flex">
+<span>def <span class="ident">long_single_log</span></span>(<span>generator: generator.SequenceGenerator.SequenceGenerator) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A call to <code>SequenceGenerator.generate_log()</code> with known sequence key <code>seq_name</code> parameter,
+and required other parameters for the <code>long_term_single_dependency</code> sequence generator.
+As opposed to generate_trace, log produces sets of tuples (due to hashing).
+Test case is the default sequence list, which is the first (and only) element in the set.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def long_single_log(generator: SequenceGenerator) -&gt; None:
+    &#34;&#34;&#34;
+    A call to `SequenceGenerator.generate_log()` with known sequence key `seq_name` parameter,
+    and required other parameters for the `long_term_single_dependency` sequence generator.
+    As opposed to generate_trace, log produces sets of tuples (due to hashing).
+    Test case is the default sequence list, which is the first (and only) element in the set.
+    &#34;&#34;&#34;
+    expected = tuple(LONGTERM_SINGLE[0 : generator.length])
+    result = generator.generate_log(
+        &#34;long_term_single_dependency&#34;,
+        firsts=[1],
+        seconds=[2],
+        thirds=[3],
+        fourths=[4],
+        fifths=[5],
+        constants=[5],
+    ).pop()
+
+    assert_equal(expected, result)</code></pre>
+</details>
+</dd>
+<dt id="integer_sequences.test.test_generator.long_single_log_missing_param"><code class="name flex">
+<span>def <span class="ident">long_single_log_missing_param</span></span>(<span>generator: generator.SequenceGenerator.SequenceGenerator) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A call to <code>SequenceGenerator.generate_log()</code> with known sequence key <code>seq_name</code> parameter,
+but missing other parameters should throw <code>MissingRequiredParameter</code>.
+This test also tests that parameters that are not required can be safely added, since the program ignores them.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def long_single_log_missing_param(generator: SequenceGenerator) -&gt; None:
+    &#34;&#34;&#34;
+    A call to `SequenceGenerator.generate_log()` with known sequence key `seq_name` parameter,
+    but missing other parameters should throw `MissingRequiredParameter`.
+    This test also tests that parameters that are not required can be safely added, since the program ignores them.
+    &#34;&#34;&#34;
+    with pytest.raises(MissingRequiredParameter):
+        # Error: Missing &#39;first&#39;, &#39;second&#39;, &#39;third&#39;, &#39;fourth&#39;, &#39;fifth&#39;, &#39;constant&#39; parameter
+        # Ignored: Supplied &#39;i_do_not_matter&#39; parameter
+        generator.generate_log(&#34;long_term_single_dependency&#34;, i_do_not_matter=True)</code></pre>
+</details>
+</dd>
+<dt id="integer_sequences.test.test_generator.long_single_log_multiple_items"><code class="name flex">
+<span>def <span class="ident">long_single_log_multiple_items</span></span>(<span>generator: generator.SequenceGenerator.SequenceGenerator) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A call to <code>SequenceGenerator.generate_log()</code> with known sequence key <code>seq_name</code> parameter,
+and required other parameters for the <code>long_term_single_dependency</code> sequence generator.
+Tests that the correct number of traces are generated.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def long_single_log_multiple_items(generator: SequenceGenerator) -&gt; None:
+    &#34;&#34;&#34;
+    A call to `SequenceGenerator.generate_log()` with known sequence key `seq_name` parameter,
+    and required other parameters for the `long_term_single_dependency` sequence generator.
+    Tests that the correct number of traces are generated.
+    &#34;&#34;&#34;
+    # 5 x 2 x 3 x 1 x 4 x 2
+    expected_traces_in_set = 240
+    result = generator.generate_log(
+        &#34;long_term_single_dependency&#34;,
+        firsts=[1, 2, 3, 4, 5],  # 5
+        seconds=[1, 2],  # 2
+        thirds=[2, 4, 5],  # 3
+        fourths=[5],  # 1
+        fifths=[1, 2, 3, 4],  # 4
+        constants=[5, 10],  # 2
+    )
+
+    resulting_traces_in_set = len(result)
+    assert_equal(expected=expected_traces_in_set, result=resulting_traces_in_set)</code></pre>
+</details>
+</dd>
+<dt id="integer_sequences.test.test_generator.long_single_log_multiple_items_error"><code class="name flex">
+<span>def <span class="ident">long_single_log_multiple_items_error</span></span>(<span>generator: generator.SequenceGenerator.SequenceGenerator) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A call to <code>SequenceGenerator.generate_log()</code> with known sequence key <code>seq_name</code> parameter,
+and required other parameters for the <code>long_term_dependency</code> sequence generator.
+Tests that an exception is thrown: Since long_term_dependency requires AT LEAST 5 parameters,
+we CANNOT generate lists of length 1, 2, 3, or 4.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def long_single_log_multiple_items_error(generator: SequenceGenerator) -&gt; None:
+    &#34;&#34;&#34;
+    A call to `SequenceGenerator.generate_log()` with known sequence key `seq_name` parameter,
+    and required other parameters for the `long_term_dependency` sequence generator.
+    Tests that an exception is thrown: Since long_term_dependency requires AT LEAST 5 parameters,
+    we CANNOT generate lists of length 1, 2, 3, or 4.
+    &#34;&#34;&#34;
+    if generator.length &lt; 5:
+        with pytest.raises(InvalidLengthException):
+            generator.generate_log(
+                &#34;long_term_single_dependency&#34;,
+                firsts=[1, 2, 3],
+                seconds=[1, 2, 3, 4],
+                thirds=[1, 2, 3, 4, 5],
+                fourths=[1, 2, 3, 4, 5],
+                fifths=[1, 2, 3, 4, 5],
+                constants=[5, 10, 15, 20],
+            )</code></pre>
+</details>
+</dd>
+<dt id="integer_sequences.test.test_generator.long_single_missing_param"><code class="name flex">
+<span>def <span class="ident">long_single_missing_param</span></span>(<span>generator: generator.SequenceGenerator.SequenceGenerator) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A call to <code>SequenceGenerator.generate_trace()</code> with known sequence key <code>seq_name</code> parameter,
+but missing other parameters should throw <code>MissingRequiredParameter</code>.
+This test also tests that parameters that are not required can be safely added, since the program ignores them.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def long_single_missing_param(generator: SequenceGenerator) -&gt; None:
+    &#34;&#34;&#34;
+    A call to `SequenceGenerator.generate_trace()` with known sequence key `seq_name` parameter,
+    but missing other parameters should throw `MissingRequiredParameter`.
+    This test also tests that parameters that are not required can be safely added, since the program ignores them.
+    &#34;&#34;&#34;
+    with pytest.raises(MissingRequiredParameter):
+        # Error: Missing &#39;first&#39;, &#39;second&#39;, &#39;third&#39;, &#39;fourth&#39;, &#39;fifth&#39;, &#39;constant&#39; parameter
+        # Ignored: Supplied &#39;i_do_not_matter&#39; parameter
+        generator.generate_trace(&#34;long_term_single_dependency&#34;, i_do_not_matter=True)</code></pre>
+</details>
+</dd>
+<dt id="integer_sequences.test.test_generator.long_single_trace"><code class="name flex">
+<span>def <span class="ident">long_single_trace</span></span>(<span>generator: generator.SequenceGenerator.SequenceGenerator) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A call to <code>SequenceGenerator.generate_trace()</code> with known sequence key <code>seq_name</code> parameter,
+and required other parameters for the <code>long_term_dependency</code> sequence generator. Test case is the default sequence list.
+This test also tests that parameters that are not required can be safely added, since the program ignores them.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def long_single_trace(generator: SequenceGenerator) -&gt; None:
+    &#34;&#34;&#34;
+    A call to `SequenceGenerator.generate_trace()` with known sequence key `seq_name` parameter,
+    and required other parameters for the `long_term_dependency` sequence generator. Test case is the default sequence list.
+    This test also tests that parameters that are not required can be safely added, since the program ignores them.
+    &#34;&#34;&#34;
+    expected = LONGTERM_SINGLE[0 : generator.length]
+    result = list(
+        generator.generate_trace(
+            &#34;long_term_single_dependency&#34;,
+            first=1,
+            second=2,
+            third=3,
+            fourth=4,
+            fifth=5,
+            constant=5,
         )
     )
     assert_equal(expected, result)</code></pre>
@@ -1237,12 +1637,19 @@ This test also tests that parameters that are not required can be safely added, 
 <span>def <span class="ident">range_down_log_multiple_items</span></span>(<span>generator: generator.SequenceGenerator.SequenceGenerator) ‑> NoneType</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>A call to <code>SequenceGenerator.generate_log()</code> with known sequence key <code>seq_name</code> parameter,
+and required other parameters for the <code>XXX</code> sequence generator.
+Tests that the correct number of traces are generated.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def range_down_log_multiple_items(generator: SequenceGenerator) -&gt; None:
+    &#34;&#34;&#34;
+    A call to `SequenceGenerator.generate_log()` with known sequence key `seq_name` parameter,
+    and required other parameters for the `XXX` sequence generator.
+    Tests that the correct number of traces are generated.
+    &#34;&#34;&#34;
     expected_traces_in_set = 12  # len(lasts) = 3 x len(steps) = 4
     result = generator.generate_log(&#34;range_down&#34;, lasts=[3, 2, 1], steps=[4, 3, 2, 1])
     resulting_traces_in_set = len(result)
@@ -1341,12 +1748,19 @@ This test also tests that parameters that are not required can be safely added, 
 <span>def <span class="ident">range_up_log_multiple_items</span></span>(<span>generator: generator.SequenceGenerator.SequenceGenerator) ‑> NoneType</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>A call to <code>SequenceGenerator.generate_log()</code> with known sequence key <code>seq_name</code> parameter,
+and required other parameters for the <code>XXX</code> sequence generator.
+Tests that the correct number of traces are generated.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def range_up_log_multiple_items(generator: SequenceGenerator) -&gt; None:
+    &#34;&#34;&#34;
+    A call to `SequenceGenerator.generate_log()` with known sequence key `seq_name` parameter,
+    and required other parameters for the `XXX` sequence generator.
+    Tests that the correct number of traces are generated.
+    &#34;&#34;&#34;
     expected_traces_in_set = 12  # len(firsts) = 3 x len(steps) = 4
     result = generator.generate_log(&#34;range_up&#34;, firsts=[1, 2, 3], steps=[1, 2, 3, 4])
     resulting_traces_in_set = len(result)
@@ -1507,6 +1921,129 @@ This test also tests that parameters that are not required can be safely added, 
         generator.generate_trace(&#34;recaman&#34;, i_do_not_matter=True)</code></pre>
 </details>
 </dd>
+<dt id="integer_sequences.test.test_generator.short_single_log"><code class="name flex">
+<span>def <span class="ident">short_single_log</span></span>(<span>generator: generator.SequenceGenerator.SequenceGenerator) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A call to <code>SequenceGenerator.generate_log()</code> with known sequence key <code>seq_name</code> parameter,
+and required other parameters for the <code>short_term_single_dependency</code> sequence generator.
+As opposed to generate_trace, log produces sets of tuples (due to hashing).
+Test case is the default sequence list, which is the first (and only) element in the set.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def short_single_log(generator: SequenceGenerator) -&gt; None:
+    &#34;&#34;&#34;
+    A call to `SequenceGenerator.generate_log()` with known sequence key `seq_name` parameter,
+    and required other parameters for the `short_term_single_dependency` sequence generator.
+    As opposed to generate_trace, log produces sets of tuples (due to hashing).
+    Test case is the default sequence list, which is the first (and only) element in the set.
+    &#34;&#34;&#34;
+    expected = tuple(SHORTTERM_SINGLE[0 : generator.length])
+    result = list(
+        generator.generate_log(
+            &#34;short_term_single_dependency&#34;, firsts=[1], constants=[7]
+        )
+    ).pop()
+    assert_equal(expected, result)</code></pre>
+</details>
+</dd>
+<dt id="integer_sequences.test.test_generator.short_single_log_missing_param"><code class="name flex">
+<span>def <span class="ident">short_single_log_missing_param</span></span>(<span>generator: generator.SequenceGenerator.SequenceGenerator) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A call to <code>SequenceGenerator.generate_log()</code> with known sequence key <code>seq_name</code> parameter,
+but missing other parameters should throw <code>MissingRequiredParameter</code>.
+This test also tests that parameters that are not required can be safely added, since the program ignores them.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def short_single_log_missing_param(generator: SequenceGenerator) -&gt; None:
+    &#34;&#34;&#34;
+    A call to `SequenceGenerator.generate_log()` with known sequence key `seq_name` parameter,
+    but missing other parameters should throw `MissingRequiredParameter`.
+    This test also tests that parameters that are not required can be safely added, since the program ignores them.
+    &#34;&#34;&#34;
+    with pytest.raises(MissingRequiredParameter):
+        # Error: Missing &#39;first&#39; parameter
+        # Ignored: Supplied &#39;i_do_not_matter&#39; parameter
+        generator.generate_log(&#34;short_term_single_dependency&#34;, i_do_not_matter=True)</code></pre>
+</details>
+</dd>
+<dt id="integer_sequences.test.test_generator.short_single_log_multiple_items"><code class="name flex">
+<span>def <span class="ident">short_single_log_multiple_items</span></span>(<span>generator: generator.SequenceGenerator.SequenceGenerator) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A call to <code>SequenceGenerator.generate_log()</code> with known sequence key <code>seq_name</code> parameter,
+and required other parameters for the <code>short_term_single_dependency</code> sequence generator.
+Tests that the correct number of traces are generated.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def short_single_log_multiple_items(generator: SequenceGenerator) -&gt; None:
+    &#34;&#34;&#34;
+    A call to `SequenceGenerator.generate_log()` with known sequence key `seq_name` parameter,
+    and required other parameters for the `short_term_single_dependency` sequence generator.
+    Tests that the correct number of traces are generated.
+    &#34;&#34;&#34;
+    expected_traces_in_set = 12  # len(firsts) = 4 x len(constants) = 3
+    result = generator.generate_log(
+        &#34;short_term_single_dependency&#34;, firsts=[1, 2, 3, 4], constants=[5, 10, 15]
+    )
+    resulting_traces_in_set = len(result)
+    assert_equal(expected=expected_traces_in_set, result=resulting_traces_in_set)</code></pre>
+</details>
+</dd>
+<dt id="integer_sequences.test.test_generator.short_single_missing_param"><code class="name flex">
+<span>def <span class="ident">short_single_missing_param</span></span>(<span>generator: generator.SequenceGenerator.SequenceGenerator) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A call to <code>SequenceGenerator.generate_trace()</code> with known sequence key <code>seq_name</code> parameter,
+but missing other parameters should throw <code>MissingRequiredParameter</code>.
+This test also tests that parameters that are not required can be safely added, since the program ignores them.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def short_single_missing_param(generator: SequenceGenerator) -&gt; None:
+    &#34;&#34;&#34;
+    A call to `SequenceGenerator.generate_trace()` with known sequence key `seq_name` parameter,
+    but missing other parameters should throw `MissingRequiredParameter`.
+    This test also tests that parameters that are not required can be safely added, since the program ignores them.
+    &#34;&#34;&#34;
+    with pytest.raises(MissingRequiredParameter):
+        # Error: Missing &#39;first&#39;, &#39;constant&#39; parameter
+        # Ignored: Supplied &#39;i_do_not_matter&#39; parameter
+        generator.generate_trace(&#34;short_term_single_dependency&#34;, i_do_not_matter=True)</code></pre>
+</details>
+</dd>
+<dt id="integer_sequences.test.test_generator.short_single_trace"><code class="name flex">
+<span>def <span class="ident">short_single_trace</span></span>(<span>generator: generator.SequenceGenerator.SequenceGenerator) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A call to <code>SequenceGenerator.generate_trace()</code> with known sequence key <code>seq_name</code> parameter,
+and required other parameters for the <code>short_term_single_dependency</code> sequence generator. Test case is the default sequence list.
+This test also tests that parameters that are not required can be safely added, since the program ignores them.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def short_single_trace(generator: SequenceGenerator) -&gt; None:
+    &#34;&#34;&#34;
+    A call to `SequenceGenerator.generate_trace()` with known sequence key `seq_name` parameter,
+    and required other parameters for the `short_term_single_dependency` sequence generator. Test case is the default sequence list.
+    This test also tests that parameters that are not required can be safely added, since the program ignores them.
+    &#34;&#34;&#34;
+    expected = SHORTTERM_SINGLE[0 : generator.length]
+    result = list(
+        generator.generate_trace(&#34;short_term_single_dependency&#34;, first=1, constant=7)
+    )
+    assert_equal(expected, result)</code></pre>
+</details>
+</dd>
 <dt id="integer_sequences.test.test_generator.test_exceptions"><code class="name flex">
 <span>def <span class="ident">test_exceptions</span></span>(<span>) ‑> NoneType</span>
 </code></dt>
@@ -1553,6 +2090,8 @@ See individual methods.</p></div>
     range_up_log_missing_param(generator=generator)
     range_down_log_missing_param(generator=generator)
     long_dependency_log_missing_param(generator=generator)
+    long_single_log_missing_param(generator=generator)
+    short_single_log_missing_param(generator=generator)
 
     # Fib wants 1+ param
     generator = SequenceGenerator(wanted_length=1)
@@ -1562,6 +2101,7 @@ See individual methods.</p></div>
     generators = [SequenceGenerator(wanted_length=length) for length in [1, 2, 3, 4]]
     for generator in generators:
         long_dependency_log_multiple_items_error(generator=generator)
+        long_single_log_multiple_items_error(generator=generator)
 
     # Normal operation, various lengths
     generators = [SequenceGenerator(wanted_length=length) for length in [10, 50, 100]]
@@ -1573,6 +2113,8 @@ See individual methods.</p></div>
         range_up_log(generator=generator)
         range_down_log(generator=generator)
         long_dependency_log(generator=generator)
+        long_single_log(generator=generator)
+        short_single_log(generator=generator)
 
         # Note: wanted_length &lt; required number of params should not be possible to call
         fib_log_multiple_items(generator=generator)
@@ -1581,7 +2123,9 @@ See individual methods.</p></div>
         catalan_log_multiple_items(generator=generator)
         range_up_log_multiple_items(generator=generator)
         range_down_log_multiple_items(generator=generator)
-        long_dependency_log_multiple_items(generator=generator)</code></pre>
+        long_dependency_log_multiple_items(generator=generator)
+        long_single_log_multiple_items(generator=generator)
+        short_single_log_multiple_items(generator=generator)</code></pre>
 </details>
 </dd>
 <dt id="integer_sequences.test.test_generator.test_generate_trace"><code class="name flex">
@@ -1611,6 +2155,8 @@ See individual methods.</p></div>
     range_up_missing_param(generator=generator)
     range_down_missing_param(generator=generator)
     long_dependency_missing_param(generator=generator)
+    long_single_missing_param(generator=generator)
+    short_single_missing_param(generator=generator)
 
     # Normal operation, various lengths
     generators = [
@@ -1623,7 +2169,9 @@ See individual methods.</p></div>
         catalan_trace(generator=generator)
         range_up_trace(generator=generator)
         range_down_trace(generator=generator)
-        long_dependency_trace(generator=generator)</code></pre>
+        long_dependency_trace(generator=generator)
+        long_single_trace(generator=generator)
+        short_single_trace(generator=generator)</code></pre>
 </details>
 </dd>
 <dt id="integer_sequences.test.test_generator.zero_length_should_raise_test"><code class="name flex">
@@ -1680,6 +2228,12 @@ as generating empty lists in this project makes no sense.</p></div>
 <li><code><a title="integer_sequences.test.test_generator.long_dependency_log_multiple_items_error" href="#integer_sequences.test.test_generator.long_dependency_log_multiple_items_error">long_dependency_log_multiple_items_error</a></code></li>
 <li><code><a title="integer_sequences.test.test_generator.long_dependency_missing_param" href="#integer_sequences.test.test_generator.long_dependency_missing_param">long_dependency_missing_param</a></code></li>
 <li><code><a title="integer_sequences.test.test_generator.long_dependency_trace" href="#integer_sequences.test.test_generator.long_dependency_trace">long_dependency_trace</a></code></li>
+<li><code><a title="integer_sequences.test.test_generator.long_single_log" href="#integer_sequences.test.test_generator.long_single_log">long_single_log</a></code></li>
+<li><code><a title="integer_sequences.test.test_generator.long_single_log_missing_param" href="#integer_sequences.test.test_generator.long_single_log_missing_param">long_single_log_missing_param</a></code></li>
+<li><code><a title="integer_sequences.test.test_generator.long_single_log_multiple_items" href="#integer_sequences.test.test_generator.long_single_log_multiple_items">long_single_log_multiple_items</a></code></li>
+<li><code><a title="integer_sequences.test.test_generator.long_single_log_multiple_items_error" href="#integer_sequences.test.test_generator.long_single_log_multiple_items_error">long_single_log_multiple_items_error</a></code></li>
+<li><code><a title="integer_sequences.test.test_generator.long_single_missing_param" href="#integer_sequences.test.test_generator.long_single_missing_param">long_single_missing_param</a></code></li>
+<li><code><a title="integer_sequences.test.test_generator.long_single_trace" href="#integer_sequences.test.test_generator.long_single_trace">long_single_trace</a></code></li>
 <li><code><a title="integer_sequences.test.test_generator.negative_length_should_raise_test" href="#integer_sequences.test.test_generator.negative_length_should_raise_test">negative_length_should_raise_test</a></code></li>
 <li><code><a title="integer_sequences.test.test_generator.nonexistent_log" href="#integer_sequences.test.test_generator.nonexistent_log">nonexistent_log</a></code></li>
 <li><code><a title="integer_sequences.test.test_generator.nonexistent_trace" href="#integer_sequences.test.test_generator.nonexistent_trace">nonexistent_trace</a></code></li>
@@ -1703,6 +2257,11 @@ as generating empty lists in this project makes no sense.</p></div>
 <li><code><a title="integer_sequences.test.test_generator.recaman_log_multiple_items" href="#integer_sequences.test.test_generator.recaman_log_multiple_items">recaman_log_multiple_items</a></code></li>
 <li><code><a title="integer_sequences.test.test_generator.recaman_trace" href="#integer_sequences.test.test_generator.recaman_trace">recaman_trace</a></code></li>
 <li><code><a title="integer_sequences.test.test_generator.recaman_trace_missing_param" href="#integer_sequences.test.test_generator.recaman_trace_missing_param">recaman_trace_missing_param</a></code></li>
+<li><code><a title="integer_sequences.test.test_generator.short_single_log" href="#integer_sequences.test.test_generator.short_single_log">short_single_log</a></code></li>
+<li><code><a title="integer_sequences.test.test_generator.short_single_log_missing_param" href="#integer_sequences.test.test_generator.short_single_log_missing_param">short_single_log_missing_param</a></code></li>
+<li><code><a title="integer_sequences.test.test_generator.short_single_log_multiple_items" href="#integer_sequences.test.test_generator.short_single_log_multiple_items">short_single_log_multiple_items</a></code></li>
+<li><code><a title="integer_sequences.test.test_generator.short_single_missing_param" href="#integer_sequences.test.test_generator.short_single_missing_param">short_single_missing_param</a></code></li>
+<li><code><a title="integer_sequences.test.test_generator.short_single_trace" href="#integer_sequences.test.test_generator.short_single_trace">short_single_trace</a></code></li>
 <li><code><a title="integer_sequences.test.test_generator.test_exceptions" href="#integer_sequences.test.test_generator.test_exceptions">test_exceptions</a></code></li>
 <li><code><a title="integer_sequences.test.test_generator.test_generate_log" href="#integer_sequences.test.test_generator.test_generate_log">test_generate_log</a></code></li>
 <li><code><a title="integer_sequences.test.test_generator.test_generate_trace" href="#integer_sequences.test.test_generator.test_generate_trace">test_generate_trace</a></code></li>
