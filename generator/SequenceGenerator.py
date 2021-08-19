@@ -19,8 +19,8 @@ class SequenceGenerator:
     Generates a log of traces that originate from the same generating distribution / method.
 
     Attributes:
-      length -- The amount of items to generate.
-      config -- A config object that holds, per implemented metod,
+      length: The amount of items to generate.
+      config: A config object that holds, per implemented metod,
                 a list of required parameters and a reference to the method.
     """
 
@@ -505,7 +505,6 @@ class SequenceGenerator:
         """
         A short term dependency. F(n) = F(n-1) * c
         """
-        print(f"set constant to {constant}")
         yield first
         # If you only want 1 number, for some reason?
         if self.length == 1:
@@ -697,8 +696,6 @@ class SequenceGenerator:
         except MissingItem:
             raise NotYetImplemented(seq_name)
 
-        print(f"With params: {kwargs}")
-
         # It exists, check for param mismatch
         required_params = self.__get_params(seq_name)
 
@@ -709,9 +706,6 @@ class SequenceGenerator:
 
         # build params to pass through
         method_params = self.__build_params(kwargs, required_params)
-
-        print(f"method: {method}")
-        print(f"built params: {method_params}")
 
         # call the function, and return its result
         return method(method_params)
