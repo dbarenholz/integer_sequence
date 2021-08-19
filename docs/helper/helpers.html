@@ -40,9 +40,11 @@ def check_item_list(item: Any, lst: List[Any]) -&gt; None:
     &#34;&#34;&#34;
     Raises a ``MissingItem`` if a particular ``item`` is NOT contained in a particular ``lst``.
 
-    :param Any item: The item to check for.
-    :param List[Any] lst: The list to check in.
-    :raises MissingItem: if ``item`` not in ``lst``
+    Parameters:
+        item: The item to check for.
+        lst: The list to check in.
+
+    Raises a MissingItem exception if ``item`` not in ``lst``.
     &#34;&#34;&#34;
     if item not in lst:
         raise MissingItem(item, lst)
@@ -52,9 +54,11 @@ def check_key_dict(key: Any, dictionary: Dict[Any, Any]) -&gt; None:
     &#34;&#34;&#34;
     Raises a ``MissingItem`` if a particular ``key`` is NOT contained in a particular ``dictionary``.
 
-    :param Any key: The key to check for.
-    :param Dict[Any, Any] dictionary: The dictionary to check in.
-    :raises MissingItem: if ``key`` not in ``dictionary.keys()``
+    Parameters:
+        key: The key to check for.
+        dictionary: The dictionary to check in.
+
+    Raises a MissingItem exception if ``key`` not in ``dictionary.keys()``
     &#34;&#34;&#34;
     if key not in dictionary.keys():
         raise MissingItem(key, dictionary)
@@ -62,12 +66,13 @@ def check_key_dict(key: Any, dictionary: Dict[Any, Any]) -&gt; None:
 
 def assert_equal(expected: Any, result: Any) -&gt; None:
     &#34;&#34;&#34;
-    Asserts that expected is equal to result.
-    To be called from tests.
+    Asserts that expected is equal to result. To be called from tests.
 
-    :param Any expected: The expected outcome of some function call.
-    :param Any result: The resulted outcome of some function call.
-    :raises AssertionError: when equality fails
+    Parameters:
+        expected: The expected outcome of some function call.
+        result: The resulted outcome of some function call.
+
+    Raises an AssertionError when equality fails.
     &#34;&#34;&#34;
     assert expected == result
 
@@ -97,8 +102,8 @@ def loads(filename: str) -&gt; Any:
 
 # Paths
 ROOTPATH = getcwd()
-DATAPATH = join(ROOTPATH, &#34;data&#34;)
-LOGPATH = join(ROOTPATH, &#34;logs&#34;)
+DATAPATH = join(ROOTPATH, &#34;input_data&#34;)
+LOGPATH = join(ROOTPATH, &#34;generated_logs&#34;)
 TESTPATH = join(ROOTPATH, &#34;test&#34;)</code></pre>
 </details>
 </section>
@@ -113,23 +118,24 @@ TESTPATH = join(ROOTPATH, &#34;test&#34;)</code></pre>
 <span>def <span class="ident">assert_equal</span></span>(<span>expected: Any, result: Any) ‑> NoneType</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Asserts that expected is equal to result.
-To be called from tests.</p>
-<p>:param Any expected: The expected outcome of some function call.
-:param Any result: The resulted outcome of some function call.
-:raises AssertionError: when equality fails</p></div>
+<div class="desc"><p>Asserts that expected is equal to result. To be called from tests.</p>
+<h2 id="parameters">Parameters</h2>
+<p>expected: The expected outcome of some function call.
+result: The resulted outcome of some function call.</p>
+<p>Raises an AssertionError when equality fails.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def assert_equal(expected: Any, result: Any) -&gt; None:
     &#34;&#34;&#34;
-    Asserts that expected is equal to result.
-    To be called from tests.
+    Asserts that expected is equal to result. To be called from tests.
 
-    :param Any expected: The expected outcome of some function call.
-    :param Any result: The resulted outcome of some function call.
-    :raises AssertionError: when equality fails
+    Parameters:
+        expected: The expected outcome of some function call.
+        result: The resulted outcome of some function call.
+
+    Raises an AssertionError when equality fails.
     &#34;&#34;&#34;
     assert expected == result</code></pre>
 </details>
@@ -139,9 +145,10 @@ To be called from tests.</p>
 </code></dt>
 <dd>
 <div class="desc"><p>Raises a <code>MissingItem</code> if a particular <code>item</code> is NOT contained in a particular <code>lst</code>.</p>
-<p>:param Any item: The item to check for.
-:param List[Any] lst: The list to check in.
-:raises MissingItem: if <code>item</code> not in <code>lst</code></p></div>
+<h2 id="parameters">Parameters</h2>
+<p>item: The item to check for.
+lst: The list to check in.</p>
+<p>Raises a MissingItem exception if <code>item</code> not in <code>lst</code>.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -150,9 +157,11 @@ To be called from tests.</p>
     &#34;&#34;&#34;
     Raises a ``MissingItem`` if a particular ``item`` is NOT contained in a particular ``lst``.
 
-    :param Any item: The item to check for.
-    :param List[Any] lst: The list to check in.
-    :raises MissingItem: if ``item`` not in ``lst``
+    Parameters:
+        item: The item to check for.
+        lst: The list to check in.
+
+    Raises a MissingItem exception if ``item`` not in ``lst``.
     &#34;&#34;&#34;
     if item not in lst:
         raise MissingItem(item, lst)</code></pre>
@@ -163,9 +172,10 @@ To be called from tests.</p>
 </code></dt>
 <dd>
 <div class="desc"><p>Raises a <code>MissingItem</code> if a particular <code>key</code> is NOT contained in a particular <code>dictionary</code>.</p>
-<p>:param Any key: The key to check for.
-:param Dict[Any, Any] dictionary: The dictionary to check in.
-:raises MissingItem: if <code>key</code> not in <code>dictionary.keys()</code></p></div>
+<h2 id="parameters">Parameters</h2>
+<p>key: The key to check for.
+dictionary: The dictionary to check in.</p>
+<p>Raises a MissingItem exception if <code>key</code> not in <code>dictionary.keys()</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -174,9 +184,11 @@ To be called from tests.</p>
     &#34;&#34;&#34;
     Raises a ``MissingItem`` if a particular ``key`` is NOT contained in a particular ``dictionary``.
 
-    :param Any key: The key to check for.
-    :param Dict[Any, Any] dictionary: The dictionary to check in.
-    :raises MissingItem: if ``key`` not in ``dictionary.keys()``
+    Parameters:
+        key: The key to check for.
+        dictionary: The dictionary to check in.
+
+    Raises a MissingItem exception if ``key`` not in ``dictionary.keys()``
     &#34;&#34;&#34;
     if key not in dictionary.keys():
         raise MissingItem(key, dictionary)</code></pre>

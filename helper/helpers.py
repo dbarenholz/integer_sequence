@@ -12,9 +12,11 @@ def check_item_list(item: Any, lst: List[Any]) -> None:
     """
     Raises a ``MissingItem`` if a particular ``item`` is NOT contained in a particular ``lst``.
 
-    :param Any item: The item to check for.
-    :param List[Any] lst: The list to check in.
-    :raises MissingItem: if ``item`` not in ``lst``
+    Parameters:
+        item: The item to check for.
+        lst: The list to check in.
+
+    Raises a MissingItem exception if ``item`` not in ``lst``.
     """
     if item not in lst:
         raise MissingItem(item, lst)
@@ -24,9 +26,11 @@ def check_key_dict(key: Any, dictionary: Dict[Any, Any]) -> None:
     """
     Raises a ``MissingItem`` if a particular ``key`` is NOT contained in a particular ``dictionary``.
 
-    :param Any key: The key to check for.
-    :param Dict[Any, Any] dictionary: The dictionary to check in.
-    :raises MissingItem: if ``key`` not in ``dictionary.keys()``
+    Parameters:
+        key: The key to check for.
+        dictionary: The dictionary to check in.
+
+    Raises a MissingItem exception if ``key`` not in ``dictionary.keys()``
     """
     if key not in dictionary.keys():
         raise MissingItem(key, dictionary)
@@ -34,12 +38,13 @@ def check_key_dict(key: Any, dictionary: Dict[Any, Any]) -> None:
 
 def assert_equal(expected: Any, result: Any) -> None:
     """
-    Asserts that expected is equal to result.
-    To be called from tests.
+    Asserts that expected is equal to result. To be called from tests.
 
-    :param Any expected: The expected outcome of some function call.
-    :param Any result: The resulted outcome of some function call.
-    :raises AssertionError: when equality fails
+    Parameters:
+        expected: The expected outcome of some function call.
+        result: The resulted outcome of some function call.
+
+    Raises an AssertionError when equality fails.
     """
     assert expected == result
 
@@ -69,6 +74,6 @@ def loads(filename: str) -> Any:
 
 # Paths
 ROOTPATH = getcwd()
-DATAPATH = join(ROOTPATH, "data")
-LOGPATH = join(ROOTPATH, "logs")
+DATAPATH = join(ROOTPATH, "input_data")
+LOGPATH = join(ROOTPATH, "generated_logs")
 TESTPATH = join(ROOTPATH, "test")

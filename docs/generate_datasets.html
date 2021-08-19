@@ -30,7 +30,7 @@
 # -*- coding: utf-8 -*-
 from typing import List, Tuple, Dict
 from os import listdir
-from os.path import isfile, join
+from os.path import join
 
 
 # Own
@@ -38,7 +38,12 @@ from generator import SequenceGenerator, XESTransformator
 from helper import DATAPATH, dumps, LOGPATH
 
 
-def transform():
+def transform() -&gt; None:
+    &#34;&#34;&#34;
+    Generates datasets by transforming XES logs.
+
+    Raises an OSError when it could not succesfully save the generated log.
+    &#34;&#34;&#34;
     # Bad check for file name extension, but Transformator class checks properly
     TO_TRANSFORM = [file for file in listdir(DATAPATH) if &#34;.xes&#34; in file]
 
@@ -54,10 +59,11 @@ def transform():
             print(&#34;Success!&#34;)
 
 
-def generate():
+def generate() -&gt; None:
     &#34;&#34;&#34;
-    Generates datasets with coded sequence generators.
-    Refer to `configurations_to_use` for all used generation configs.
+    Generates datasets with sequence generators. Refer to `configurations_to_use` for all used generation configs.
+
+    Raises an OSError when it could not succesfully save the generated log.
     &#34;&#34;&#34;
     # Shorthand for a bunch of numbers to be used in configs below
     # Exclude 0 for multiplication issues
@@ -394,8 +400,8 @@ def generate():
         ],
     ]
     &#34;&#34;&#34;
-    All configurations used to generate the datasets. 
-    This list generates a total of 1420 datasets. 
+    All configurations used to generate the datasets.
+    This list generates a total of 1420 datasets.
     Most of them are very similar, and do not need to be used in analysis.
     &#34;&#34;&#34;
 
@@ -409,7 +415,7 @@ def generate():
             print(f&#34;Success: &#39;{key}-{case_name}&#39;&#34;)
 
 
-def generate_datasets():
+def generate_datasets() -&gt; None:
     &#34;&#34;&#34;
     Generates all datasets.
     &#34;&#34;&#34;
@@ -443,19 +449,20 @@ else:
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="integer_sequences.generate_datasets.generate"><code class="name flex">
-<span>def <span class="ident">generate</span></span>(<span>)</span>
+<span>def <span class="ident">generate</span></span>(<span>) ‑> NoneType</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Generates datasets with coded sequence generators.
-Refer to <code>configurations_to_use</code> for all used generation configs.</p></div>
+<div class="desc"><p>Generates datasets with sequence generators. Refer to <code>configurations_to_use</code> for all used generation configs.</p>
+<p>Raises an OSError when it could not succesfully save the generated log.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def generate():
+<pre><code class="python">def generate() -&gt; None:
     &#34;&#34;&#34;
-    Generates datasets with coded sequence generators.
-    Refer to `configurations_to_use` for all used generation configs.
+    Generates datasets with sequence generators. Refer to `configurations_to_use` for all used generation configs.
+
+    Raises an OSError when it could not succesfully save the generated log.
     &#34;&#34;&#34;
     # Shorthand for a bunch of numbers to be used in configs below
     # Exclude 0 for multiplication issues
@@ -792,8 +799,8 @@ Refer to <code>configurations_to_use</code> for all used generation configs.</p>
         ],
     ]
     &#34;&#34;&#34;
-    All configurations used to generate the datasets. 
-    This list generates a total of 1420 datasets. 
+    All configurations used to generate the datasets.
+    This list generates a total of 1420 datasets.
     Most of them are very similar, and do not need to be used in analysis.
     &#34;&#34;&#34;
 
@@ -808,7 +815,7 @@ Refer to <code>configurations_to_use</code> for all used generation configs.</p>
 </details>
 </dd>
 <dt id="integer_sequences.generate_datasets.generate_datasets"><code class="name flex">
-<span>def <span class="ident">generate_datasets</span></span>(<span>)</span>
+<span>def <span class="ident">generate_datasets</span></span>(<span>) ‑> NoneType</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Generates all datasets.</p></div>
@@ -816,7 +823,7 @@ Refer to <code>configurations_to_use</code> for all used generation configs.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def generate_datasets():
+<pre><code class="python">def generate_datasets() -&gt; None:
     &#34;&#34;&#34;
     Generates all datasets.
     &#34;&#34;&#34;
@@ -833,15 +840,21 @@ Refer to <code>configurations_to_use</code> for all used generation configs.</p>
 </details>
 </dd>
 <dt id="integer_sequences.generate_datasets.transform"><code class="name flex">
-<span>def <span class="ident">transform</span></span>(<span>)</span>
+<span>def <span class="ident">transform</span></span>(<span>) ‑> NoneType</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Generates datasets by transforming XES logs.</p>
+<p>Raises an OSError when it could not succesfully save the generated log.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def transform():
+<pre><code class="python">def transform() -&gt; None:
+    &#34;&#34;&#34;
+    Generates datasets by transforming XES logs.
+
+    Raises an OSError when it could not succesfully save the generated log.
+    &#34;&#34;&#34;
     # Bad check for file name extension, but Transformator class checks properly
     TO_TRANSFORM = [file for file in listdir(DATAPATH) if &#34;.xes&#34; in file]
 

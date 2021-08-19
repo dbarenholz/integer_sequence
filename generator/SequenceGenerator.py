@@ -30,7 +30,7 @@ class SequenceGenerator:
         Initializes the SequenceGenerator class.
 
         Parameters:
-          wanted_length -- The desired amount of items to generate.
+          wanted_length: The desired amount of items to generate.
                            10 by default.
         """
         # Test for invalid lengths
@@ -90,8 +90,8 @@ class SequenceGenerator:
         where the first term is `first` and the second term is `second`.
 
         Parameters:
-          first -- The first element of the sequence.
-          second -- The second element of the sequence.
+          first: The first element of the sequence.
+          second: The second element of the sequence.
 
         Returns a generator that generates the sequence.
         """
@@ -129,7 +129,7 @@ class SequenceGenerator:
         where the first integer is `first` (usually this is 1).
 
         Parameters:
-          first -- The first integer on top of the triangle,
+          first: The first integer on top of the triangle,
                    and consequently the first integer in the sequence.
 
         Returns a generator that generates the sequence.
@@ -145,7 +145,7 @@ class SequenceGenerator:
             Computes the next row in the triangle of pascal.
 
             Parameters:
-              row -- The current row.
+              row: The current row.
 
             Returns a the next row.
             """
@@ -193,7 +193,7 @@ class SequenceGenerator:
         Available [here](https://oeis.org/A005132).
 
         Parameters:
-          first -- The first element of the sequence.
+          first: The first element of the sequence.
                    The original sequence defines this as 0.
 
         Returns a generator that generates the sequence.
@@ -213,8 +213,8 @@ class SequenceGenerator:
             Computes the next value in the sequence.
 
             Parameters:
-              current -- The current value.
-              index -- The index of the current value.
+              current: The current value.
+              index: The index of the current value.
 
             Returns the new value.
             """
@@ -260,7 +260,7 @@ class SequenceGenerator:
         In particular, 14544636039226909 became 14544636039226908 and all subsequent values were off.
 
         Parameters:
-          first -- The first element of the sequence.
+          first: The first element of the sequence.
                    The original sequence defines this as 1.
 
         Returns a generator that generates the sequence.
@@ -294,8 +294,8 @@ class SequenceGenerator:
         Simple range generator that counts up.
 
         Parameters:
-          first -- The first element of the sequence.
-          step -- The stepsize passed to range
+          first: The first element of the sequence.
+          step: The stepsize passed to range
 
         Returns a generator that generates the sequence.
         """
@@ -333,8 +333,8 @@ class SequenceGenerator:
         such that the last element will be `last`.
 
         Parameters:
-          last -- The last element of the sequence.
-          step -- The stepsize passed to range
+          last: The last element of the sequence.
+          step: The stepsize passed to range
 
         Returns a generator that generates the sequence.
         """
@@ -539,7 +539,7 @@ class SequenceGenerator:
         Gets config parameters for a particul sequence generator.
 
         Parameters:
-          seq_name -- The name of the sequence generation method for which to retrieve parameters.
+          seq_name: The name of the sequence generation method for which to retrieve parameters.
 
         Returns a list of parameters.
         """
@@ -551,7 +551,7 @@ class SequenceGenerator:
         Gets the method reference for a particular sequence generator.
 
         Parameters:
-          seq_name -- The name of the sequence generation method for which to retrieve a method reference.
+          seq_name: The name of the sequence generation method for which to retrieve a method reference.
 
         Returns a method reference.
         """
@@ -563,8 +563,8 @@ class SequenceGenerator:
         Checks correctness of supplied parameters to `self.generate_trace` or `self.generate_log`.
 
         Parameters:
-          given -- The given dictionary.
-          required  -- The required items.
+          given: The given dictionary.
+          required : The required items.
 
         Raises a ``MissingRequiredParameter`` when something that was required wasn't there.
         """
@@ -579,8 +579,8 @@ class SequenceGenerator:
         Builds a keyword-argument dictionary given the parameters in `self.generate_trace` or `self.generate_log`.
 
         Parameters:
-          given -- The given dictionary.
-          required  -- The required items.
+          given: The given dictionary.
+          required : The required items.
 
         Returns a dictionary of the form:
         ```
@@ -629,8 +629,8 @@ class SequenceGenerator:
         ```
 
         Parameters:
-          given -- The given dictionary.
-          required  -- The required items.
+          given: The given dictionary.
+          required : The required items.
 
         Returns a list of dictionaries as listed above.
         """
@@ -657,7 +657,7 @@ class SequenceGenerator:
         given a particular generator, identified by `seq_name`.
 
         Parameters:
-          seq_name -- The name of the sequence generation method for which to perform this check.
+          seq_name: The name of the sequence generation method for which to perform this check.
 
         Raises an `InvalidLengthException` when a sequence cannot be generated
         due to mismatch of required params and wanted length.
@@ -684,7 +684,7 @@ class SequenceGenerator:
         Generates a single trace corresponding to some sequence.
 
         Parameters:
-          seq_name -- The name of the sequence generation method for which to generate a trace.
+          seq_name: The name of the sequence generation method for which to generate a trace.
 
         Raises a `NotYetImplemented` when the `seq_name` key does not correspond to a generator method.
         Raises a `MissingRequiredParameter` when a particular parameter was not provided.
@@ -715,7 +715,7 @@ class SequenceGenerator:
         Generates an entire log corresponding to some sequence.
 
         Parameters:
-          seq_name -- The name of the sequence generation method for which to generate a log.
+          seq_name: The name of the sequence generation method for which to generate a log.
 
         Raises a `NotYetImplemented` when the `seq_name` key does not correspond to a generator method.
         Raises a `MissingRequiredParameter` when a particular parameter was not provided.

@@ -65,7 +65,7 @@ a list of required parameters and a reference to the method.</dd>
 </dl>
 <p>Initializes the SequenceGenerator class.</p>
 <h2 id="parameters">Parameters</h2>
-<p>wanted_length &ndash; The desired amount of items to generate.
+<p>wanted_length: The desired amount of items to generate.
 10 by default.</p></div>
 <details class="source">
 <summary>
@@ -87,7 +87,7 @@ a list of required parameters and a reference to the method.</dd>
         Initializes the SequenceGenerator class.
 
         Parameters:
-          wanted_length -- The desired amount of items to generate.
+          wanted_length: The desired amount of items to generate.
                            10 by default.
         &#34;&#34;&#34;
         # Test for invalid lengths
@@ -147,8 +147,8 @@ a list of required parameters and a reference to the method.</dd>
         where the first term is `first` and the second term is `second`.
 
         Parameters:
-          first -- The first element of the sequence.
-          second -- The second element of the sequence.
+          first: The first element of the sequence.
+          second: The second element of the sequence.
 
         Returns a generator that generates the sequence.
         &#34;&#34;&#34;
@@ -186,7 +186,7 @@ a list of required parameters and a reference to the method.</dd>
         where the first integer is `first` (usually this is 1).
 
         Parameters:
-          first -- The first integer on top of the triangle,
+          first: The first integer on top of the triangle,
                    and consequently the first integer in the sequence.
 
         Returns a generator that generates the sequence.
@@ -202,7 +202,7 @@ a list of required parameters and a reference to the method.</dd>
             Computes the next row in the triangle of pascal.
 
             Parameters:
-              row -- The current row.
+              row: The current row.
 
             Returns a the next row.
             &#34;&#34;&#34;
@@ -250,7 +250,7 @@ a list of required parameters and a reference to the method.</dd>
         Available [here](https://oeis.org/A005132).
 
         Parameters:
-          first -- The first element of the sequence.
+          first: The first element of the sequence.
                    The original sequence defines this as 0.
 
         Returns a generator that generates the sequence.
@@ -270,8 +270,8 @@ a list of required parameters and a reference to the method.</dd>
             Computes the next value in the sequence.
 
             Parameters:
-              current -- The current value.
-              index -- The index of the current value.
+              current: The current value.
+              index: The index of the current value.
 
             Returns the new value.
             &#34;&#34;&#34;
@@ -317,7 +317,7 @@ a list of required parameters and a reference to the method.</dd>
         In particular, 14544636039226909 became 14544636039226908 and all subsequent values were off.
 
         Parameters:
-          first -- The first element of the sequence.
+          first: The first element of the sequence.
                    The original sequence defines this as 1.
 
         Returns a generator that generates the sequence.
@@ -351,8 +351,8 @@ a list of required parameters and a reference to the method.</dd>
         Simple range generator that counts up.
 
         Parameters:
-          first -- The first element of the sequence.
-          step -- The stepsize passed to range
+          first: The first element of the sequence.
+          step: The stepsize passed to range
 
         Returns a generator that generates the sequence.
         &#34;&#34;&#34;
@@ -390,8 +390,8 @@ a list of required parameters and a reference to the method.</dd>
         such that the last element will be `last`.
 
         Parameters:
-          last -- The last element of the sequence.
-          step -- The stepsize passed to range
+          last: The last element of the sequence.
+          step: The stepsize passed to range
 
         Returns a generator that generates the sequence.
         &#34;&#34;&#34;
@@ -596,7 +596,7 @@ a list of required parameters and a reference to the method.</dd>
         Gets config parameters for a particul sequence generator.
 
         Parameters:
-          seq_name -- The name of the sequence generation method for which to retrieve parameters.
+          seq_name: The name of the sequence generation method for which to retrieve parameters.
 
         Returns a list of parameters.
         &#34;&#34;&#34;
@@ -608,7 +608,7 @@ a list of required parameters and a reference to the method.</dd>
         Gets the method reference for a particular sequence generator.
 
         Parameters:
-          seq_name -- The name of the sequence generation method for which to retrieve a method reference.
+          seq_name: The name of the sequence generation method for which to retrieve a method reference.
 
         Returns a method reference.
         &#34;&#34;&#34;
@@ -620,8 +620,8 @@ a list of required parameters and a reference to the method.</dd>
         Checks correctness of supplied parameters to `self.generate_trace` or `self.generate_log`.
 
         Parameters:
-          given -- The given dictionary.
-          required  -- The required items.
+          given: The given dictionary.
+          required : The required items.
 
         Raises a ``MissingRequiredParameter`` when something that was required wasn&#39;t there.
         &#34;&#34;&#34;
@@ -636,8 +636,8 @@ a list of required parameters and a reference to the method.</dd>
         Builds a keyword-argument dictionary given the parameters in `self.generate_trace` or `self.generate_log`.
 
         Parameters:
-          given -- The given dictionary.
-          required  -- The required items.
+          given: The given dictionary.
+          required : The required items.
 
         Returns a dictionary of the form:
         ```
@@ -686,8 +686,8 @@ a list of required parameters and a reference to the method.</dd>
         ```
 
         Parameters:
-          given -- The given dictionary.
-          required  -- The required items.
+          given: The given dictionary.
+          required : The required items.
 
         Returns a list of dictionaries as listed above.
         &#34;&#34;&#34;
@@ -714,7 +714,7 @@ a list of required parameters and a reference to the method.</dd>
         given a particular generator, identified by `seq_name`.
 
         Parameters:
-          seq_name -- The name of the sequence generation method for which to perform this check.
+          seq_name: The name of the sequence generation method for which to perform this check.
 
         Raises an `InvalidLengthException` when a sequence cannot be generated
         due to mismatch of required params and wanted length.
@@ -741,7 +741,7 @@ a list of required parameters and a reference to the method.</dd>
         Generates a single trace corresponding to some sequence.
 
         Parameters:
-          seq_name -- The name of the sequence generation method for which to generate a trace.
+          seq_name: The name of the sequence generation method for which to generate a trace.
 
         Raises a `NotYetImplemented` when the `seq_name` key does not correspond to a generator method.
         Raises a `MissingRequiredParameter` when a particular parameter was not provided.
@@ -772,7 +772,7 @@ a list of required parameters and a reference to the method.</dd>
         Generates an entire log corresponding to some sequence.
 
         Parameters:
-          seq_name -- The name of the sequence generation method for which to generate a log.
+          seq_name: The name of the sequence generation method for which to generate a log.
 
         Raises a `NotYetImplemented` when the `seq_name` key does not correspond to a generator method.
         Raises a `MissingRequiredParameter` when a particular parameter was not provided.
@@ -840,9 +840,8 @@ a list of required parameters and a reference to the method.</p></div>
 ]
 </code></pre>
 <h2 id="parameters">Parameters</h2>
-<p>given &ndash; The given dictionary.
-required
-&ndash; The required items.</p>
+<p>given: The given dictionary.
+required : The required items.</p>
 <p>Returns a list of dictionaries as listed above.</p></div>
 <details class="source">
 <summary>
@@ -881,8 +880,8 @@ required
     ```
 
     Parameters:
-      given -- The given dictionary.
-      required  -- The required items.
+      given: The given dictionary.
+      required : The required items.
 
     Returns a list of dictionaries as listed above.
     &#34;&#34;&#34;
@@ -910,9 +909,8 @@ required
 <dd>
 <div class="desc"><p>Builds a keyword-argument dictionary given the parameters in <code>self.generate_trace</code> or <code>self.generate_log</code>.</p>
 <h2 id="parameters">Parameters</h2>
-<p>given &ndash; The given dictionary.
-required
-&ndash; The required items.</p>
+<p>given: The given dictionary.
+required : The required items.</p>
 <p>Returns a dictionary of the form:</p>
 <pre><code>{
     &quot;param1&quot; : value,
@@ -931,8 +929,8 @@ required
     Builds a keyword-argument dictionary given the parameters in `self.generate_trace` or `self.generate_log`.
 
     Parameters:
-      given -- The given dictionary.
-      required  -- The required items.
+      given: The given dictionary.
+      required : The required items.
 
     Returns a dictionary of the form:
     ```
@@ -958,7 +956,7 @@ The catalan sequence is available <a href="https://oeis.org/A000108">here</a>.</
 <p>Implemented using dynamic programming as the direct formula has issues with <code>n &gt; 30</code>
 In particular, 14544636039226909 became 14544636039226908 and all subsequent values were off.</p>
 <h2 id="parameters">Parameters</h2>
-<p>first &ndash; The first element of the sequence.
+<p>first: The first element of the sequence.
 The original sequence defines this as 1.</p>
 <p>Returns a generator that generates the sequence.</p></div>
 <details class="source">
@@ -974,7 +972,7 @@ The original sequence defines this as 1.</p>
     In particular, 14544636039226909 became 14544636039226908 and all subsequent values were off.
 
     Parameters:
-      first -- The first element of the sequence.
+      first: The first element of the sequence.
                The original sequence defines this as 1.
 
     Returns a generator that generates the sequence.
@@ -1023,7 +1021,7 @@ Written so we can have a unified interface to generate traces, given a sequence 
 <div class="desc"><p>Checks whether or not we can mathematically generate a trace of length <code>self.length</code>
 given a particular generator, identified by <code>seq_name</code>.</p>
 <h2 id="parameters">Parameters</h2>
-<p>seq_name &ndash; The name of the sequence generation method for which to perform this check.</p>
+<p>seq_name: The name of the sequence generation method for which to perform this check.</p>
 <p>Raises an <code>InvalidLengthException</code> when a sequence cannot be generated
 due to mismatch of required params and wanted length.</p></div>
 <details class="source">
@@ -1036,7 +1034,7 @@ due to mismatch of required params and wanted length.</p></div>
     given a particular generator, identified by `seq_name`.
 
     Parameters:
-      seq_name -- The name of the sequence generation method for which to perform this check.
+      seq_name: The name of the sequence generation method for which to perform this check.
 
     Raises an `InvalidLengthException` when a sequence cannot be generated
     due to mismatch of required params and wanted length.
@@ -1056,9 +1054,8 @@ due to mismatch of required params and wanted length.</p></div>
 <dd>
 <div class="desc"><p>Checks correctness of supplied parameters to <code>self.generate_trace</code> or <code>self.generate_log</code>.</p>
 <h2 id="parameters">Parameters</h2>
-<p>given &ndash; The given dictionary.
-required
-&ndash; The required items.</p>
+<p>given: The given dictionary.
+required : The required items.</p>
 <p>Raises a <code>MissingRequiredParameter</code> when something that was required wasn't there.</p></div>
 <details class="source">
 <summary>
@@ -1069,8 +1066,8 @@ required
     Checks correctness of supplied parameters to `self.generate_trace` or `self.generate_log`.
 
     Parameters:
-      given -- The given dictionary.
-      required  -- The required items.
+      given: The given dictionary.
+      required : The required items.
 
     Raises a ``MissingRequiredParameter`` when something that was required wasn&#39;t there.
     &#34;&#34;&#34;
@@ -1086,8 +1083,8 @@ required
 <div class="desc"><p>Yield the first <code>self.length</code> numbers of the Fibonnaci sequence
 where the first term is <code>first</code> and the second term is <code>second</code>.</p>
 <h2 id="parameters">Parameters</h2>
-<p>first &ndash; The first element of the sequence.
-second &ndash; The second element of the sequence.</p>
+<p>first: The first element of the sequence.
+second: The second element of the sequence.</p>
 <p>Returns a generator that generates the sequence.</p></div>
 <details class="source">
 <summary>
@@ -1099,8 +1096,8 @@ second &ndash; The second element of the sequence.</p>
     where the first term is `first` and the second term is `second`.
 
     Parameters:
-      first -- The first element of the sequence.
-      second -- The second element of the sequence.
+      first: The first element of the sequence.
+      second: The second element of the sequence.
 
     Returns a generator that generates the sequence.
     &#34;&#34;&#34;
@@ -1150,7 +1147,7 @@ Written so we can have a unified interface to generate traces, given a sequence 
 <dd>
 <div class="desc"><p>Gets the method reference for a particular sequence generator.</p>
 <h2 id="parameters">Parameters</h2>
-<p>seq_name &ndash; The name of the sequence generation method for which to retrieve a method reference.</p>
+<p>seq_name: The name of the sequence generation method for which to retrieve a method reference.</p>
 <p>Returns a method reference.</p></div>
 <details class="source">
 <summary>
@@ -1161,7 +1158,7 @@ Written so we can have a unified interface to generate traces, given a sequence 
     Gets the method reference for a particular sequence generator.
 
     Parameters:
-      seq_name -- The name of the sequence generation method for which to retrieve a method reference.
+      seq_name: The name of the sequence generation method for which to retrieve a method reference.
 
     Returns a method reference.
     &#34;&#34;&#34;
@@ -1174,7 +1171,7 @@ Written so we can have a unified interface to generate traces, given a sequence 
 <dd>
 <div class="desc"><p>Gets config parameters for a particul sequence generator.</p>
 <h2 id="parameters">Parameters</h2>
-<p>seq_name &ndash; The name of the sequence generation method for which to retrieve parameters.</p>
+<p>seq_name: The name of the sequence generation method for which to retrieve parameters.</p>
 <p>Returns a list of parameters.</p></div>
 <details class="source">
 <summary>
@@ -1185,7 +1182,7 @@ Written so we can have a unified interface to generate traces, given a sequence 
     Gets config parameters for a particul sequence generator.
 
     Parameters:
-      seq_name -- The name of the sequence generation method for which to retrieve parameters.
+      seq_name: The name of the sequence generation method for which to retrieve parameters.
 
     Returns a list of parameters.
     &#34;&#34;&#34;
@@ -1377,7 +1374,7 @@ Written so we can have a unified interface to generate traces, given a sequence 
 reading the pascal triangle from left to right, top to bottom,
 where the first integer is <code>first</code> (usually this is 1).</p>
 <h2 id="parameters">Parameters</h2>
-<p>first &ndash; The first integer on top of the triangle,
+<p>first: The first integer on top of the triangle,
 and consequently the first integer in the sequence.</p>
 <p>Returns a generator that generates the sequence.</p></div>
 <details class="source">
@@ -1391,7 +1388,7 @@ and consequently the first integer in the sequence.</p>
     where the first integer is `first` (usually this is 1).
 
     Parameters:
-      first -- The first integer on top of the triangle,
+      first: The first integer on top of the triangle,
                and consequently the first integer in the sequence.
 
     Returns a generator that generates the sequence.
@@ -1407,7 +1404,7 @@ and consequently the first integer in the sequence.</p>
         Computes the next row in the triangle of pascal.
 
         Parameters:
-          row -- The current row.
+          row: The current row.
 
         Returns a the next row.
         &#34;&#34;&#34;
@@ -1468,8 +1465,8 @@ Written so we can have a unified interface to generate traces, given a sequence 
 <div class="desc"><p>Simple range generator that counts down with stepsize <code>step</code>
 such that the last element will be <code>last</code>.</p>
 <h2 id="parameters">Parameters</h2>
-<p>last &ndash; The last element of the sequence.
-step &ndash; The stepsize passed to range</p>
+<p>last: The last element of the sequence.
+step: The stepsize passed to range</p>
 <p>Returns a generator that generates the sequence.</p></div>
 <details class="source">
 <summary>
@@ -1481,8 +1478,8 @@ step &ndash; The stepsize passed to range</p>
     such that the last element will be `last`.
 
     Parameters:
-      last -- The last element of the sequence.
-      step -- The stepsize passed to range
+      last: The last element of the sequence.
+      step: The stepsize passed to range
 
     Returns a generator that generates the sequence.
     &#34;&#34;&#34;
@@ -1535,8 +1532,8 @@ Written so we can have a unified interface to generate traces, given a sequence 
 <dd>
 <div class="desc"><p>Simple range generator that counts up.</p>
 <h2 id="parameters">Parameters</h2>
-<p>first &ndash; The first element of the sequence.
-step &ndash; The stepsize passed to range</p>
+<p>first: The first element of the sequence.
+step: The stepsize passed to range</p>
 <p>Returns a generator that generates the sequence.</p></div>
 <details class="source">
 <summary>
@@ -1547,8 +1544,8 @@ step &ndash; The stepsize passed to range</p>
     Simple range generator that counts up.
 
     Parameters:
-      first -- The first element of the sequence.
-      step -- The stepsize passed to range
+      first: The first element of the sequence.
+      step: The stepsize passed to range
 
     Returns a generator that generates the sequence.
     &#34;&#34;&#34;
@@ -1601,7 +1598,7 @@ Written so we can have a unified interface to generate traces, given a sequence 
 from the on-line encyclopedia of integer sequences.
 Available <a href="https://oeis.org/A005132">here</a>.</p>
 <h2 id="parameters">Parameters</h2>
-<p>first &ndash; The first element of the sequence.
+<p>first: The first element of the sequence.
 The original sequence defines this as 0.</p>
 <p>Returns a generator that generates the sequence.</p></div>
 <details class="source">
@@ -1615,7 +1612,7 @@ The original sequence defines this as 0.</p>
     Available [here](https://oeis.org/A005132).
 
     Parameters:
-      first -- The first element of the sequence.
+      first: The first element of the sequence.
                The original sequence defines this as 0.
 
     Returns a generator that generates the sequence.
@@ -1635,8 +1632,8 @@ The original sequence defines this as 0.</p>
         Computes the next value in the sequence.
 
         Parameters:
-          current -- The current value.
-          index -- The index of the current value.
+          current: The current value.
+          index: The index of the current value.
 
         Returns the new value.
         &#34;&#34;&#34;
@@ -1748,7 +1745,7 @@ Written so we can have a unified interface to generate traces, given a sequence 
 <dd>
 <div class="desc"><p>Generates an entire log corresponding to some sequence.</p>
 <h2 id="parameters">Parameters</h2>
-<p>seq_name &ndash; The name of the sequence generation method for which to generate a log.</p>
+<p>seq_name: The name of the sequence generation method for which to generate a log.</p>
 <p>Raises a <code>NotYetImplemented</code> when the <code>seq_name</code> key does not correspond to a generator method.
 Raises a <code>MissingRequiredParameter</code> when a particular parameter was not provided.</p>
 <p>Returns a log of traces a list of tuples.</p></div>
@@ -1761,7 +1758,7 @@ Raises a <code>MissingRequiredParameter</code> when a particular parameter was n
     Generates an entire log corresponding to some sequence.
 
     Parameters:
-      seq_name -- The name of the sequence generation method for which to generate a log.
+      seq_name: The name of the sequence generation method for which to generate a log.
 
     Raises a `NotYetImplemented` when the `seq_name` key does not correspond to a generator method.
     Raises a `MissingRequiredParameter` when a particular parameter was not provided.
@@ -1793,7 +1790,7 @@ Raises a <code>MissingRequiredParameter</code> when a particular parameter was n
 <dd>
 <div class="desc"><p>Generates a single trace corresponding to some sequence.</p>
 <h2 id="parameters">Parameters</h2>
-<p>seq_name &ndash; The name of the sequence generation method for which to generate a trace.</p>
+<p>seq_name: The name of the sequence generation method for which to generate a trace.</p>
 <p>Raises a <code>NotYetImplemented</code> when the <code>seq_name</code> key does not correspond to a generator method.
 Raises a <code>MissingRequiredParameter</code> when a particular parameter was not provided.</p>
 <p>Returns a generator for a particular sequence.</p></div>
@@ -1806,7 +1803,7 @@ Raises a <code>MissingRequiredParameter</code> when a particular parameter was n
     Generates a single trace corresponding to some sequence.
 
     Parameters:
-      seq_name -- The name of the sequence generation method for which to generate a trace.
+      seq_name: The name of the sequence generation method for which to generate a trace.
 
     Raises a `NotYetImplemented` when the `seq_name` key does not correspond to a generator method.
     Raises a `MissingRequiredParameter` when a particular parameter was not provided.
